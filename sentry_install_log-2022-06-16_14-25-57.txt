@@ -1,0 +1,1081 @@
+▶ Parsing command line ...
+
+▶ Initializing Docker Compose ...
+
+▶ Setting up error handling ...
+
+▶ Checking for latest commit ... 
+skipped
+
+▶ Checking minimum requirements ...
+Found Docker version 20.10.17
+Found Docker Compose version 2.6.0
+
+▶ Turning things off ...
+Network sentry-self-hosted_default  Removing
+Network sentry-self-hosted_default  Removed
+Warning: No resource found to remove for project "sentry_onpremise".
+
+▶ Creating volumes for persistent storage ...
+Created sentry-clickhouse.
+Created sentry-data.
+Created sentry-kafka.
+Created sentry-postgres.
+Created sentry-redis.
+Created sentry-symbolicator.
+Created sentry-zookeeper.
+
+▶ Ensuring files from examples ...
+../sentry/sentry.conf.py already exists, skipped creation.
+../sentry/config.yml already exists, skipped creation.
+../symbolicator/config.yml already exists, skipped creation.
+
+▶ Ensuring Relay credentials ...
+../relay/config.yml already exists, skipped creation.
+../relay/credentials.json already exists, skipped creation.
+
+▶ Generating secret key ...
+
+▶ Replacing TSDB ...
+
+▶ Fetching and updating Docker images ...
+22.6.0: Pulling from getsentry/sentry
+f7a1c6dad281: Pulling fs layer
+92c59ec44e08: Pulling fs layer
+08935196cb79: Pulling fs layer
+7aa958b41dfb: Pulling fs layer
+86c7a279e304: Pulling fs layer
+7da37016a7e5: Pulling fs layer
+c141df22af5f: Pulling fs layer
+c7a731e338c4: Pulling fs layer
+a634a839732e: Pulling fs layer
+d7ed0a809a96: Pulling fs layer
+cb700d4f9979: Pulling fs layer
+74d1948a63af: Pulling fs layer
+2c4e4fca3d3b: Pulling fs layer
+0d45f8ca3f44: Pulling fs layer
+7aa958b41dfb: Waiting
+7da37016a7e5: Waiting
+86c7a279e304: Waiting
+c141df22af5f: Waiting
+a634a839732e: Waiting
+c7a731e338c4: Waiting
+d7ed0a809a96: Waiting
+cb700d4f9979: Waiting
+74d1948a63af: Waiting
+2c4e4fca3d3b: Waiting
+461a01d924c3: Pulling fs layer
+0d45f8ca3f44: Waiting
+461a01d924c3: Waiting
+92c59ec44e08: Verifying Checksum
+92c59ec44e08: Download complete
+7aa958b41dfb: Verifying Checksum
+7aa958b41dfb: Download complete
+08935196cb79: Verifying Checksum
+08935196cb79: Download complete
+7da37016a7e5: Verifying Checksum
+7da37016a7e5: Download complete
+86c7a279e304: Verifying Checksum
+86c7a279e304: Download complete
+c141df22af5f: Verifying Checksum
+c141df22af5f: Download complete
+f7a1c6dad281: Verifying Checksum
+f7a1c6dad281: Download complete
+f7a1c6dad281: Pull complete
+92c59ec44e08: Pull complete
+08935196cb79: Pull complete
+7aa958b41dfb: Pull complete
+86c7a279e304: Pull complete
+7da37016a7e5: Pull complete
+c141df22af5f: Pull complete
+c7a731e338c4: Verifying Checksum
+c7a731e338c4: Download complete
+c7a731e338c4: Pull complete
+d7ed0a809a96: Verifying Checksum
+d7ed0a809a96: Download complete
+74d1948a63af: Verifying Checksum
+74d1948a63af: Download complete
+2c4e4fca3d3b: Verifying Checksum
+2c4e4fca3d3b: Download complete
+0d45f8ca3f44: Verifying Checksum
+0d45f8ca3f44: Download complete
+cb700d4f9979: Verifying Checksum
+cb700d4f9979: Download complete
+461a01d924c3: Verifying Checksum
+461a01d924c3: Download complete
+a634a839732e: Download complete
+a634a839732e: Pull complete
+d7ed0a809a96: Pull complete
+cb700d4f9979: Pull complete
+74d1948a63af: Pull complete
+2c4e4fca3d3b: Pull complete
+0d45f8ca3f44: Pull complete
+461a01d924c3: Pull complete
+Digest: sha256:804c986af20b59ea0f1c0824c9e80de5e5c1fbaabbb29ebe2289a376115dd100
+Status: Downloaded newer image for getsentry/sentry:22.6.0
+docker.io/getsentry/sentry:22.6.0
+
+▶ Building and tagging Docker images ...
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 463B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/getsentry/sentry:22.6.0
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 25.09kB done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/getsentry/sentry:22.6.0
+#5 DONE 0.3s
+
+#6 [2/4] COPY . /usr/src/sentry
+#6 DONE 0.0s
+
+#7 [3/4] RUN if [ -s /usr/src/sentry/enhance-image.sh ]; then     /usr/src/sentry/enhance-image.sh; fi
+#7 DONE 0.3s
+
+#8 [4/4] RUN if [ -s /usr/src/sentry/requirements.txt ]; then     echo "sentry/requirements.txt is deprecated, use sentry/enhance-image.sh - see https://github.com/getsentry/self-hosted#enhance-sentry-image";     pip install -r /usr/src/sentry/requirements.txt; fi
+#8 DONE 0.4s
+
+#9 exporting to image
+#9 exporting layers 0.0s done
+#9 writing image sha256:39a28b30a10e9b29580e415034319185b518b9aac3920377a09bb91f964b11e7 done
+#9 naming to docker.io/library/sentry-self-hosted-local done
+#9 DONE 0.1s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+#1 [sentry-cleanup-self-hosted-local internal] load build definition from Dockerfile
+#1 transferring dockerfile: 250B done
+#1 DONE 0.0s
+
+#2 [sentry-self-hosted-local internal] load build definition from Dockerfile
+#2 transferring dockerfile: 32B done
+#2 DONE 0.0s
+
+#3 [snuba-cleanup-self-hosted-local internal] load build definition from Dockerfile
+#3 transferring dockerfile: 250B done
+#3 DONE 0.0s
+
+#4 [symbolicator-cleanup-self-hosted-local internal] load build definition from Dockerfile
+#4 transferring dockerfile: 250B done
+#4 DONE 0.0s
+
+#5 [sentry-cleanup-self-hosted-local internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [snuba-cleanup-self-hosted-local internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [symbolicator-cleanup-self-hosted-local internal] load .dockerignore
+#7 transferring context: 2B done
+#7 DONE 0.0s
+
+#8 [sentry-self-hosted-local internal] load .dockerignore
+#8 transferring context: 2B 0.0s done
+#8 DONE 0.0s
+
+#9 [symbolicator-cleanup-self-hosted-local internal] load metadata for docker.io/getsentry/symbolicator:0.5.1
+#9 DONE 0.0s
+
+#10 [sentry-self-hosted-local internal] load metadata for docker.io/getsentry/sentry:22.6.0
+#10 DONE 0.0s
+
+#11 [sentry-self-hosted-local internal] load build context
+#11 DONE 0.0s
+
+#12 [sentry-self-hosted-local 1/4] FROM docker.io/getsentry/sentry:22.6.0
+#12 DONE 0.0s
+
+#13 [snuba-cleanup-self-hosted-local internal] load metadata for docker.io/getsentry/snuba:22.6.0
+#13 DONE 0.0s
+
+#14 [sentry-cleanup-self-hosted-local internal] load metadata for docker.io/library/sentry-self-hosted-local:latest
+#14 DONE 0.0s
+
+#15 [sentry-cleanup-self-hosted-local internal] load build context
+#15 transferring context: 662B done
+#15 DONE 0.0s
+
+#16 [snuba-cleanup-self-hosted-local internal] load build context
+#16 transferring context: 662B done
+#16 DONE 0.1s
+
+#11 [sentry-self-hosted-local internal] load build context
+#11 transferring context: 297B done
+#11 DONE 0.0s
+
+#17 [symbolicator-cleanup-self-hosted-local internal] load build context
+#17 transferring context: 662B done
+#17 DONE 0.1s
+
+#18 [sentry-self-hosted-local 3/4] RUN if [ -s /usr/src/sentry/enhance-image.sh ]; then     /usr/src/sentry/enhance-image.sh; fi
+#18 CACHED
+
+#19 [sentry-self-hosted-local 2/4] COPY . /usr/src/sentry
+#19 CACHED
+
+#20 [sentry-self-hosted-local 4/4] RUN if [ -s /usr/src/sentry/requirements.txt ]; then     echo "sentry/requirements.txt is deprecated, use sentry/enhance-image.sh - see https://github.com/getsentry/self-hosted#enhance-sentry-image";     pip install -r /usr/src/sentry/requirements.txt; fi
+#20 CACHED
+
+#21 [symbolicator-cleanup-self-hosted-local 1/3] FROM docker.io/getsentry/symbolicator:0.5.1
+#21 DONE 0.2s
+
+#22 [sentry-self-hosted-local] exporting to image
+#22 exporting layers done
+#22 writing image sha256:39a28b30a10e9b29580e415034319185b518b9aac3920377a09bb91f964b11e7 done
+#22 naming to docker.io/library/sentry-self-hosted-local done
+#22 DONE 0.2s
+
+#23 [snuba-cleanup-self-hosted-local 1/3] FROM docker.io/getsentry/snuba:22.6.0
+#23 DONE 0.3s
+
+#24 [sentry-cleanup-self-hosted-local 1/3] FROM docker.io/library/sentry-self-hosted-local
+#24 DONE 0.4s
+
+#25 [snuba-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#25 0.709 Get:1 http://security.debian.org/debian-security bullseye-security InRelease [44.1 kB]
+#25 1.203 Get:2 http://security.debian.org/debian-security bullseye-security/main amd64 Packages [154 kB]
+#25 3.328 Get:3 http://deb.debian.org/debian bullseye InRelease [116 kB]
+#25 4.034 Get:4 http://deb.debian.org/debian bullseye-updates InRelease [39.4 kB]
+#25 4.870 Get:5 http://deb.debian.org/debian bullseye/main amd64 Packages [8182 kB]
+#25 ...
+
+#26 [symbolicator-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#0 0.690 Get:1 http://security.debian.org/debian-security stretch/updates InRelease [53.0 kB]
+#0 1.161 Get:2 http://security.debian.org/debian-security stretch/updates/main amd64 Packages [778 kB]
+#0 1.942 Ign:3 http://deb.debian.org/debian stretch InRelease
+#0 2.052 Get:4 http://deb.debian.org/debian stretch-updates InRelease [93.6 kB]
+#0 2.970 Get:5 http://deb.debian.org/debian stretch Release [118 kB]
+#0 6.586 Get:6 http://deb.debian.org/debian stretch Release.gpg [3177 B]
+#0 6.844 Get:7 http://deb.debian.org/debian stretch/main amd64 Packages [7080 kB]
+#26 ...
+
+#27 [sentry-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#0 0.772 Get:1 http://deb.debian.org/debian bullseye InRelease [116 kB]
+#0 2.285 Get:2 http://deb.debian.org/debian bullseye-updates InRelease [39.4 kB]
+#0 4.972 Get:3 http://deb.debian.org/debian bullseye/main amd64 Packages [8182 kB]
+#0 6.466 Get:4 http://security.debian.org/debian-security bullseye-security InRelease [44.1 kB]
+#0 8.061 Get:5 http://security.debian.org/debian-security bullseye-security/main amd64 Packages [154 kB]
+#27 ...
+
+#25 [snuba-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#25 87.17 Ign:5 http://deb.debian.org/debian bullseye/main amd64 Packages
+#25 87.55 Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages [2592 B]
+#25 87.77 Get:5 http://deb.debian.org/debian bullseye/main amd64 Packages [8182 kB]
+#25 ...
+
+#26 [symbolicator-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#26 229.8 Get:7 http://deb.debian.org/debian stretch/main amd64 Packages [7080 kB]
+#26 ...
+
+#27 [sentry-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#27 325.3 Ign:3 http://deb.debian.org/debian bullseye/main amd64 Packages
+#27 325.7 Get:6 http://deb.debian.org/debian bullseye-updates/main amd64 Packages [2592 B]
+#27 326.5 Get:3 http://deb.debian.org/debian bullseye/main amd64 Packages [8182 kB]
+#27 ...
+
+#26 [symbolicator-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#26 369.9 Fetched 7621 kB in 6min 9s (20.6 kB/s)
+#26 369.9 Reading package lists...
+#26 370.3 Reading package lists...
+#26 370.7 Building dependency tree...
+#26 370.8 Reading state information...
+#26 370.8 Suggested packages:
+#26 370.8   anacron logrotate checksecurity
+#26 370.8 Recommended packages:
+#26 370.8   exim4 | postfix | mail-transport-agent
+#26 370.8 The following NEW packages will be installed:
+#26 370.8   cron
+#26 371.2 0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+#26 371.2 Need to get 96.6 kB of archives.
+#26 371.2 After this operation, 257 kB of additional disk space will be used.
+#26 371.2 Get:1 http://security.debian.org/debian-security stretch/updates/main amd64 cron amd64 3.0pl1-128+deb9u2 [96.6 kB]
+#26 371.6 debconf: delaying package configuration, since apt-utils is not installed
+#26 371.6 Fetched 96.6 kB in 0s (138 kB/s)
+#26 371.6 Selecting previously unselected package cron.
+#26 371.6 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 6906 files and directories currently installed.)
+#26 371.6 Preparing to unpack .../cron_3.0pl1-128+deb9u2_amd64.deb ...
+#26 371.6 Unpacking cron (3.0pl1-128+deb9u2) ...
+#26 371.7 Setting up cron (3.0pl1-128+deb9u2) ...
+#26 371.7 Adding group `crontab' (GID 101) ...
+#26 371.7 Done.
+#26 371.8 update-rc.d: warning: start and stop actions are no longer supported; falling back to defaults
+#26 371.8 invoke-rc.d: could not determine current runlevel
+#26 371.8 invoke-rc.d: policy-rc.d denied execution of start.
+#26 DONE 371.9s
+
+#27 [sentry-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#27 ...
+
+#28 [symbolicator-cleanup-self-hosted-local 3/3] COPY entrypoint.sh /entrypoint.sh
+#28 DONE 0.0s
+
+#22 [symbolicator-cleanup-self-hosted-local] exporting to image
+#22 exporting layers 0.0s done
+#22 writing image sha256:64b25f368733fc44b404d23af87e30e6420e4c934e2ef53d947c5561e81e0aa2 done
+#22 naming to docker.io/library/symbolicator-cleanup-self-hosted-local done
+#22 DONE 0.2s
+
+#27 [sentry-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#27 ...
+
+#25 [snuba-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#25 503.1 Fetched 7999 kB in 8min 23s (15.9 kB/s)
+#25 503.1 Reading package lists...
+#25 503.4 Reading package lists...
+#25 503.7 Building dependency tree...
+#25 503.8 Reading state information...
+#25 503.9 The following additional packages will be installed:
+#25 503.9   sensible-utils
+#25 503.9 Suggested packages:
+#25 503.9   anacron logrotate checksecurity
+#25 503.9 Recommended packages:
+#25 503.9   default-mta | mail-transport-agent
+#25 503.9 The following NEW packages will be installed:
+#25 503.9   cron sensible-utils
+#25 504.1 0 upgraded, 2 newly installed, 0 to remove and 1 not upgraded.
+#25 504.1 Need to get 114 kB of archives.
+#25 504.1 After this operation, 314 kB of additional disk space will be used.
+#25 504.1 Get:1 http://deb.debian.org/debian bullseye/main amd64 sensible-utils all 0.0.14 [14.8 kB]
+#25 504.2 Get:2 http://deb.debian.org/debian bullseye/main amd64 cron amd64 3.0pl1-137 [99.6 kB]
+#25 504.7 debconf: delaying package configuration, since apt-utils is not installed
+#25 504.7 Fetched 114 kB in 1s (160 kB/s)
+#25 504.7 Selecting previously unselected package sensible-utils.
+#25 504.7 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 7032 files and directories currently installed.)
+#25 504.7 Preparing to unpack .../sensible-utils_0.0.14_all.deb ...
+#25 504.7 Unpacking sensible-utils (0.0.14) ...
+#25 504.7 Selecting previously unselected package cron.
+#25 504.7 Preparing to unpack .../cron_3.0pl1-137_amd64.deb ...
+#25 504.7 Unpacking cron (3.0pl1-137) ...
+#25 504.8 Setting up sensible-utils (0.0.14) ...
+#25 504.8 Setting up cron (3.0pl1-137) ...
+#25 504.8 Adding group `crontab' (GID 101) ...
+#25 504.9 Done.
+#25 504.9 invoke-rc.d: could not determine current runlevel
+#25 504.9 invoke-rc.d: policy-rc.d denied execution of start.
+#25 DONE 505.0s
+
+#27 [sentry-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#27 ...
+
+#29 [snuba-cleanup-self-hosted-local 3/3] COPY entrypoint.sh /entrypoint.sh
+#29 DONE 0.0s
+
+#22 [snuba-cleanup-self-hosted-local] exporting to image
+#22 exporting layers 0.0s done
+#22 writing image sha256:53dcb46d5c2f7c7c6834c1fa4e6c3fb1202aac5455adea8b7b54ffca91941b87 done
+#22 naming to docker.io/library/snuba-cleanup-self-hosted-local done
+#22 DONE 0.2s
+
+#27 [sentry-cleanup-self-hosted-local 2/3] RUN apt-get update && apt-get install -y --no-install-recommends cron &&     rm -r /var/lib/apt/lists/*
+#27 981.3 Fetched 6530 kB in 16min 21s (6657 B/s)
+#27 981.3 Reading package lists...
+#27 981.6 Reading package lists...
+#27 981.9 Building dependency tree...
+#27 982.0 Reading state information...
+#27 982.1 The following additional packages will be installed:
+#27 982.1   sensible-utils
+#27 982.1 Suggested packages:
+#27 982.1   anacron logrotate checksecurity
+#27 982.1 Recommended packages:
+#27 982.1   default-mta | mail-transport-agent
+#27 982.1 The following NEW packages will be installed:
+#27 982.1   cron sensible-utils
+#27 982.6 0 upgraded, 2 newly installed, 0 to remove and 13 not upgraded.
+#27 982.6 Need to get 114 kB of archives.
+#27 982.6 After this operation, 314 kB of additional disk space will be used.
+#27 982.6 Get:1 http://deb.debian.org/debian bullseye/main amd64 sensible-utils all 0.0.14 [14.8 kB]
+#27 982.8 Get:2 http://deb.debian.org/debian bullseye/main amd64 cron amd64 3.0pl1-137 [99.6 kB]
+#27 985.2 debconf: delaying package configuration, since apt-utils is not installed
+#27 985.2 Fetched 114 kB in 3s (38.5 kB/s)
+#27 985.2 Selecting previously unselected package sensible-utils.
+#27 985.2 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 12313 files and directories currently installed.)
+#27 985.2 Preparing to unpack .../sensible-utils_0.0.14_all.deb ...
+#27 985.2 Unpacking sensible-utils (0.0.14) ...
+#27 985.2 Selecting previously unselected package cron.
+#27 985.2 Preparing to unpack .../cron_3.0pl1-137_amd64.deb ...
+#27 985.3 Unpacking cron (3.0pl1-137) ...
+#27 985.3 Setting up sensible-utils (0.0.14) ...
+#27 985.3 Setting up cron (3.0pl1-137) ...
+#27 985.3 Adding group `crontab' (GID 101) ...
+#27 985.4 Done.
+#27 985.4 invoke-rc.d: could not determine current runlevel
+#27 985.4 invoke-rc.d: policy-rc.d denied execution of start.
+#27 DONE 985.5s
+
+#30 [sentry-cleanup-self-hosted-local 3/3] COPY entrypoint.sh /entrypoint.sh
+#30 DONE 0.0s
+
+#22 [sentry-cleanup-self-hosted-local] exporting to image
+#22 exporting layers 0.0s done
+#22 writing image sha256:9328d504f599552e2d87ffe571fb9d3379a0a58558d138b5c55ad78f30233811 done
+#22 naming to docker.io/library/sentry-cleanup-self-hosted-local done
+#22 DONE 0.3s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+
+Docker images built.
+
+▶ Setting up Zookeeper ...
+Network sentry-self-hosted_default  Creating
+Network sentry-self-hosted_default  Created
+
+▶ Downloading and installing wal2json ...
+Unable to find image 'curlimages/curl:7.77.0' locally
+7.77.0: Pulling from curlimages/curl
+339de151aab4: Pulling fs layer
+9576f9a419e9: Pulling fs layer
+5b67e0e9bce9: Pulling fs layer
+7c0640a6c519: Pulling fs layer
+1d8f7d50664a: Pulling fs layer
+3ce74da83aeb: Pulling fs layer
+7094fabf5e16: Pulling fs layer
+2f4d0b649c1f: Pulling fs layer
+110e7f874674: Pulling fs layer
+7c0640a6c519: Waiting
+3ce74da83aeb: Waiting
+1d8f7d50664a: Waiting
+110e7f874674: Waiting
+2f4d0b649c1f: Waiting
+5b67e0e9bce9: Verifying Checksum
+5b67e0e9bce9: Download complete
+9576f9a419e9: Verifying Checksum
+9576f9a419e9: Download complete
+1d8f7d50664a: Verifying Checksum
+1d8f7d50664a: Download complete
+7c0640a6c519: Verifying Checksum
+7c0640a6c519: Download complete
+3ce74da83aeb: Verifying Checksum
+3ce74da83aeb: Download complete
+7094fabf5e16: Download complete
+2f4d0b649c1f: Verifying Checksum
+2f4d0b649c1f: Download complete
+110e7f874674: Verifying Checksum
+110e7f874674: Download complete
+339de151aab4: Verifying Checksum
+339de151aab4: Download complete
+339de151aab4: Pull complete
+9576f9a419e9: Pull complete
+5b67e0e9bce9: Pull complete
+7c0640a6c519: Pull complete
+1d8f7d50664a: Pull complete
+3ce74da83aeb: Pull complete
+7094fabf5e16: Pull complete
+2f4d0b649c1f: Pull complete
+110e7f874674: Pull complete
+Digest: sha256:6e0a786e3e5181df00eaf3a0a1749c18a6bb20b01c9bd192ea72176ce8a1c94b
+Status: Downloaded newer image for curlimages/curl:7.77.0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  5417  100  5417    0     0   7517      0 --:--:-- --:--:-- --:--:--  7513
+100  5417  100  5417    0     0   7516      0 --:--:-- --:--:-- --:--:--  7513
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+ 10  101k   10 11180    0     0   2614      0  0:00:39  0:00:04  0:00:35  4650
+ 41  101k   41 42959    0     0   8039      0  0:00:12  0:00:05  0:00:07 12372
+ 69  101k   69 72311    0     0  10725      0  0:00:09  0:00:06  0:00:03 14845
+ 75  101k   75 77910    0     0  10303      0  0:00:10  0:00:07  0:00:03 16248
+ 91  101k   91 94698    0     0  11298      0  0:00:09  0:00:08  0:00:01 19667
+100  101k  100  101k    0     0  11510      0  0:00:09  0:00:09 --:--:-- 19555
+
+▶ Bootstrapping and migrating Snuba ...
+Container sentry-self-hosted-zookeeper-1  Creating
+Container sentry-self-hosted-clickhouse-1  Creating
+Container sentry-self-hosted-redis-1  Creating
+Container sentry-self-hosted-clickhouse-1  Created
+Container sentry-self-hosted-zookeeper-1  Created
+Container sentry-self-hosted-kafka-1  Creating
+Container sentry-self-hosted-redis-1  Created
+Container sentry-self-hosted-kafka-1  Created
+Container sentry-self-hosted-redis-1  Starting
+Container sentry-self-hosted-zookeeper-1  Starting
+Container sentry-self-hosted-clickhouse-1  Starting
+Container sentry-self-hosted-redis-1  Started
+Container sentry-self-hosted-clickhouse-1  Started
+Container sentry-self-hosted-zookeeper-1  Started
+Container sentry-self-hosted-zookeeper-1  Waiting
+Container sentry-self-hosted-zookeeper-1  Healthy
+Container sentry-self-hosted-kafka-1  Starting
+Container sentry-self-hosted-kafka-1  Started
+2022-06-16 07:23:34,345 Attempting to connect to Kafka (attempt 0)...
+2022-06-16 07:23:34,360 Connected to Kafka on attempt 0
+2022-06-16 07:23:34,360 Creating Kafka topics...
+2022-06-16 07:23:34,691 Topic events created
+2022-06-16 07:23:34,692 Topic event-replacements created
+2022-06-16 07:23:34,692 Topic snuba-commit-log created
+2022-06-16 07:23:34,692 Topic cdc created
+2022-06-16 07:23:34,692 Topic snuba-metrics created
+2022-06-16 07:23:34,692 Topic outcomes created
+2022-06-16 07:23:34,692 Topic ingest-sessions created
+2022-06-16 07:23:34,692 Topic snuba-metrics-commit-log created
+2022-06-16 07:23:34,692 Topic scheduled-subscriptions-events created
+2022-06-16 07:23:34,692 Topic scheduled-subscriptions-transactions created
+2022-06-16 07:23:34,692 Topic scheduled-subscriptions-metrics created
+2022-06-16 07:23:34,692 Topic events-subscription-results created
+2022-06-16 07:23:34,692 Topic transactions-subscription-results created
+2022-06-16 07:23:34,692 Topic metrics-subscription-results created
+2022-06-16 07:23:34,692 Topic snuba-queries created
+2022-06-16 07:23:34,692 Topic processed-profiles created
+2022-06-16 07:23:34,692 Topic snuba-dead-letter-inserts created
+2022-06-16 07:23:34,692 Topic snuba-dead-letter-metrics created
+2022-06-16 07:23:34,692 Topic snuba-dead-letter-sessions created
+Container sentry-self-hosted-zookeeper-1  Running
+Container sentry-self-hosted-clickhouse-1  Running
+Container sentry-self-hosted-kafka-1  Running
+Container sentry-self-hosted-redis-1  Running
+Container sentry-self-hosted-zookeeper-1  Waiting
+Container sentry-self-hosted-zookeeper-1  Healthy
+2022-06-16 07:23:38,698 Running migration: 0001_migrations
+2022-06-16 07:23:38,701 Finished: 0001_migrations
+2022-06-16 07:23:38,707 Running migration: 0001_events_initial
+2022-06-16 07:23:38,715 Finished: 0001_events_initial
+2022-06-16 07:23:38,719 Running migration: 0002_events_onpremise_compatibility
+2022-06-16 07:23:38,770 Finished: 0002_events_onpremise_compatibility
+2022-06-16 07:23:38,774 Running migration: 0003_errors
+2022-06-16 07:23:38,780 Finished: 0003_errors
+2022-06-16 07:23:38,784 Running migration: 0004_errors_onpremise_compatibility
+2022-06-16 07:23:38,790 Finished: 0004_errors_onpremise_compatibility
+2022-06-16 07:23:38,794 Running migration: 0005_events_tags_hash_map
+2022-06-16 07:23:38,809 Finished: 0005_events_tags_hash_map
+2022-06-16 07:23:38,812 Running migration: 0006_errors_tags_hash_map
+2022-06-16 07:23:38,820 Finished: 0006_errors_tags_hash_map
+2022-06-16 07:23:38,824 Running migration: 0007_groupedmessages
+2022-06-16 07:23:38,829 Finished: 0007_groupedmessages
+2022-06-16 07:23:38,833 Running migration: 0008_groupassignees
+2022-06-16 07:23:38,843 Finished: 0008_groupassignees
+2022-06-16 07:23:38,847 Running migration: 0009_errors_add_http_fields
+2022-06-16 07:23:38,858 Finished: 0009_errors_add_http_fields
+2022-06-16 07:23:38,862 Running migration: 0010_groupedmessages_onpremise_compatibility
+2022-06-16 07:23:38,866 Finished: 0010_groupedmessages_onpremise_compatibility
+2022-06-16 07:23:38,870 Running migration: 0011_rebuild_errors
+2022-06-16 07:23:38,890 Finished: 0011_rebuild_errors
+2022-06-16 07:23:38,894 Running migration: 0012_errors_make_level_nullable
+2022-06-16 07:23:38,901 Finished: 0012_errors_make_level_nullable
+2022-06-16 07:23:38,904 Running migration: 0013_errors_add_hierarchical_hashes
+2022-06-16 07:23:38,921 Finished: 0013_errors_add_hierarchical_hashes
+2022-06-16 07:23:38,926 Running migration: 0014_backfill_errors
+2022-06-16 07:23:38,930 Starting migration from 2022-06-13
+2022-06-16 07:23:38,945 Migrated 2022-06-13. (1 of 13 partitions done)
+2022-06-16 07:23:38,957 Migrated 2022-06-06. (2 of 13 partitions done)
+2022-06-16 07:23:38,971 Migrated 2022-05-30. (3 of 13 partitions done)
+2022-06-16 07:23:38,981 Migrated 2022-05-23. (4 of 13 partitions done)
+2022-06-16 07:23:38,992 Migrated 2022-05-16. (5 of 13 partitions done)
+2022-06-16 07:23:39,005 Migrated 2022-05-09. (6 of 13 partitions done)
+2022-06-16 07:23:39,015 Migrated 2022-05-02. (7 of 13 partitions done)
+2022-06-16 07:23:39,030 Migrated 2022-04-25. (8 of 13 partitions done)
+2022-06-16 07:23:39,041 Migrated 2022-04-18. (9 of 13 partitions done)
+2022-06-16 07:23:39,053 Migrated 2022-04-11. (10 of 13 partitions done)
+2022-06-16 07:23:39,066 Migrated 2022-04-04. (11 of 13 partitions done)
+2022-06-16 07:23:39,076 Migrated 2022-03-28. (12 of 13 partitions done)
+2022-06-16 07:23:39,087 Migrated 2022-03-21. (13 of 13 partitions done)
+2022-06-16 07:23:39,087 Done. Optimizing.
+2022-06-16 07:23:39,089 Finished: 0014_backfill_errors
+2022-06-16 07:23:39,093 Running migration: 0015_truncate_events
+2022-06-16 07:23:39,100 Finished: 0015_truncate_events
+2022-06-16 07:23:39,104 Running migration: 0016_drop_legacy_events
+2022-06-16 07:23:39,107 Finished: 0016_drop_legacy_events
+2022-06-16 07:23:39,111 Running migration: 0001_transactions
+2022-06-16 07:23:39,122 Finished: 0001_transactions
+2022-06-16 07:23:39,126 Running migration: 0002_transactions_onpremise_fix_orderby_and_partitionby
+2022-06-16 07:23:39,129 Finished: 0002_transactions_onpremise_fix_orderby_and_partitionby
+2022-06-16 07:23:39,132 Running migration: 0003_transactions_onpremise_fix_columns
+2022-06-16 07:23:39,181 Finished: 0003_transactions_onpremise_fix_columns
+2022-06-16 07:23:39,184 Running migration: 0004_transactions_add_tags_hash_map
+2022-06-16 07:23:39,189 Finished: 0004_transactions_add_tags_hash_map
+2022-06-16 07:23:39,192 Running migration: 0005_transactions_add_measurements
+2022-06-16 07:23:39,199 Finished: 0005_transactions_add_measurements
+2022-06-16 07:23:39,203 Running migration: 0006_transactions_add_http_fields
+2022-06-16 07:23:39,215 Finished: 0006_transactions_add_http_fields
+2022-06-16 07:23:39,218 Running migration: 0007_transactions_add_discover_cols
+2022-06-16 07:23:39,236 Finished: 0007_transactions_add_discover_cols
+2022-06-16 07:23:39,239 Running migration: 0008_transactions_add_timestamp_index
+2022-06-16 07:23:39,245 Finished: 0008_transactions_add_timestamp_index
+2022-06-16 07:23:39,249 Running migration: 0009_transactions_fix_title_and_message
+2022-06-16 07:23:39,260 Finished: 0009_transactions_fix_title_and_message
+2022-06-16 07:23:39,263 Running migration: 0010_transactions_nullable_trace_id
+2022-06-16 07:23:39,268 Finished: 0010_transactions_nullable_trace_id
+2022-06-16 07:23:39,271 Running migration: 0011_transactions_add_span_op_breakdowns
+2022-06-16 07:23:39,279 Finished: 0011_transactions_add_span_op_breakdowns
+2022-06-16 07:23:39,284 Running migration: 0012_transactions_add_spans
+2022-06-16 07:23:39,314 Finished: 0012_transactions_add_spans
+2022-06-16 07:23:39,319 Running migration: 0013_transactions_reduce_spans_exclusive_time
+2022-06-16 07:23:39,329 Finished: 0013_transactions_reduce_spans_exclusive_time
+2022-06-16 07:23:39,332 Running migration: 0014_transactions_remove_flattened_columns
+2022-06-16 07:23:39,345 Finished: 0014_transactions_remove_flattened_columns
+2022-06-16 07:23:39,351 Running migration: 0001_discover_merge_table
+2022-06-16 07:23:39,356 Finished: 0001_discover_merge_table
+2022-06-16 07:23:39,359 Running migration: 0002_discover_add_deleted_tags_hash_map
+2022-06-16 07:23:39,365 Finished: 0002_discover_add_deleted_tags_hash_map
+2022-06-16 07:23:39,369 Running migration: 0003_discover_fix_user_column
+2022-06-16 07:23:39,374 Finished: 0003_discover_fix_user_column
+2022-06-16 07:23:39,377 Running migration: 0004_discover_fix_title_and_message
+2022-06-16 07:23:39,386 Finished: 0004_discover_fix_title_and_message
+2022-06-16 07:23:39,389 Running migration: 0005_discover_fix_transaction_name
+2022-06-16 07:23:39,393 Finished: 0005_discover_fix_transaction_name
+2022-06-16 07:23:39,395 Running migration: 0006_discover_add_trace_id
+2022-06-16 07:23:39,401 Finished: 0006_discover_add_trace_id
+2022-06-16 07:23:39,404 Running migration: 0007_discover_add_span_id
+2022-06-16 07:23:39,414 Finished: 0007_discover_add_span_id
+2022-06-16 07:23:39,419 Running migration: 0001_outcomes
+2022-06-16 07:23:39,427 Finished: 0001_outcomes
+2022-06-16 07:23:39,431 Running migration: 0002_outcomes_remove_size_and_bytes
+2022-06-16 07:23:39,439 Finished: 0002_outcomes_remove_size_and_bytes
+2022-06-16 07:23:39,443 Running migration: 0003_outcomes_add_category_and_quantity
+2022-06-16 07:23:39,452 Finished: 0003_outcomes_add_category_and_quantity
+2022-06-16 07:23:39,455 Running migration: 0004_outcomes_matview_additions
+2022-06-16 07:23:39,459 Finished: 0004_outcomes_matview_additions
+2022-06-16 07:23:39,467 Running migration: 0001_metrics_buckets
+2022-06-16 07:23:39,474 Finished: 0001_metrics_buckets
+2022-06-16 07:23:39,477 Running migration: 0002_metrics_sets
+2022-06-16 07:23:39,489 Finished: 0002_metrics_sets
+2022-06-16 07:23:39,493 Running migration: 0003_counters_to_buckets
+2022-06-16 07:23:39,504 Finished: 0003_counters_to_buckets
+2022-06-16 07:23:39,507 Running migration: 0004_metrics_counters
+2022-06-16 07:23:39,523 Finished: 0004_metrics_counters
+2022-06-16 07:23:39,526 Running migration: 0005_metrics_distributions_buckets
+2022-06-16 07:23:39,535 Finished: 0005_metrics_distributions_buckets
+2022-06-16 07:23:39,539 Running migration: 0006_metrics_distributions
+2022-06-16 07:23:39,554 Finished: 0006_metrics_distributions
+2022-06-16 07:23:39,557 Running migration: 0007_metrics_sets_granularity_10
+2022-06-16 07:23:39,561 Finished: 0007_metrics_sets_granularity_10
+2022-06-16 07:23:39,571 Running migration: 0008_metrics_counters_granularity_10
+2022-06-16 07:23:39,575 Finished: 0008_metrics_counters_granularity_10
+2022-06-16 07:23:39,578 Running migration: 0009_metrics_distributions_granularity_10
+2022-06-16 07:23:39,582 Finished: 0009_metrics_distributions_granularity_10
+2022-06-16 07:23:39,587 Running migration: 0010_metrics_sets_granularity_1h
+2022-06-16 07:23:39,592 Finished: 0010_metrics_sets_granularity_1h
+2022-06-16 07:23:39,596 Running migration: 0011_metrics_counters_granularity_1h
+2022-06-16 07:23:39,601 Finished: 0011_metrics_counters_granularity_1h
+2022-06-16 07:23:39,606 Running migration: 0012_metrics_distributions_granularity_1h
+2022-06-16 07:23:39,610 Finished: 0012_metrics_distributions_granularity_1h
+2022-06-16 07:23:39,613 Running migration: 0013_metrics_sets_granularity_1d
+2022-06-16 07:23:39,619 Finished: 0013_metrics_sets_granularity_1d
+2022-06-16 07:23:39,622 Running migration: 0014_metrics_counters_granularity_1d
+2022-06-16 07:23:39,626 Finished: 0014_metrics_counters_granularity_1d
+2022-06-16 07:23:39,629 Running migration: 0015_metrics_distributions_granularity_1d
+2022-06-16 07:23:39,638 Finished: 0015_metrics_distributions_granularity_1d
+2022-06-16 07:23:39,641 Running migration: 0016_metrics_sets_consolidated_granularity
+2022-06-16 07:23:39,646 Finished: 0016_metrics_sets_consolidated_granularity
+2022-06-16 07:23:39,650 Running migration: 0017_metrics_counters_consolidated_granularity
+2022-06-16 07:23:39,656 Finished: 0017_metrics_counters_consolidated_granularity
+2022-06-16 07:23:39,660 Running migration: 0018_metrics_distributions_consolidated_granularity
+2022-06-16 07:23:39,665 Finished: 0018_metrics_distributions_consolidated_granularity
+2022-06-16 07:23:39,667 Running migration: 0019_aggregate_tables_add_ttl
+2022-06-16 07:23:39,678 Finished: 0019_aggregate_tables_add_ttl
+2022-06-16 07:23:39,682 Running migration: 0020_polymorphic_buckets_table
+2022-06-16 07:23:39,689 Finished: 0020_polymorphic_buckets_table
+2022-06-16 07:23:39,693 Running migration: 0021_polymorphic_bucket_materialized_views
+2022-06-16 07:23:39,701 Finished: 0021_polymorphic_bucket_materialized_views
+2022-06-16 07:23:39,704 Running migration: 0022_repartition_polymorphic_table
+2022-06-16 07:23:39,710 Finished: 0022_repartition_polymorphic_table
+2022-06-16 07:23:39,713 Running migration: 0023_polymorphic_repartitioned_bucket_matview
+2022-06-16 07:23:39,724 Finished: 0023_polymorphic_repartitioned_bucket_matview
+2022-06-16 07:23:39,728 Running migration: 0024_metrics_distributions_add_histogram
+2022-06-16 07:23:39,739 Finished: 0024_metrics_distributions_add_histogram
+2022-06-16 07:23:39,743 Running migration: 0025_metrics_counters_aggregate_v2
+2022-06-16 07:23:39,759 Finished: 0025_metrics_counters_aggregate_v2
+2022-06-16 07:23:39,762 Running migration: 0026_metrics_counters_v2_writing_matview
+2022-06-16 07:23:39,766 Finished: 0026_metrics_counters_v2_writing_matview
+2022-06-16 07:23:39,769 Running migration: 0027_fix_migration_0026
+2022-06-16 07:23:39,775 Finished: 0027_fix_migration_0026
+2022-06-16 07:23:39,779 Running migration: 0028_metrics_sets_aggregate_v2
+2022-06-16 07:23:39,797 Finished: 0028_metrics_sets_aggregate_v2
+2022-06-16 07:23:39,801 Running migration: 0029_metrics_distributions_aggregate_v2
+2022-06-16 07:23:39,821 Finished: 0029_metrics_distributions_aggregate_v2
+2022-06-16 07:23:39,824 Running migration: 0030_metrics_distributions_v2_writing_mv
+2022-06-16 07:23:39,829 Finished: 0030_metrics_distributions_v2_writing_mv
+2022-06-16 07:23:39,831 Running migration: 0031_metrics_sets_v2_writing_mv
+2022-06-16 07:23:39,838 Finished: 0031_metrics_sets_v2_writing_mv
+2022-06-16 07:23:39,849 Running migration: 0032_redo_0030_and_0031_without_timestamps
+2022-06-16 07:23:39,857 Finished: 0032_redo_0030_and_0031_without_timestamps
+2022-06-16 07:23:39,859 Running migration: 0033_metrics_cleanup_old_views
+2022-06-16 07:23:39,876 Finished: 0033_metrics_cleanup_old_views
+2022-06-16 07:23:39,880 Running migration: 0034_metrics_cleanup_old_tables
+2022-06-16 07:23:39,886 Finished: 0034_metrics_cleanup_old_tables
+2022-06-16 07:23:39,889 Running migration: 0001_sessions
+2022-06-16 07:23:39,900 Finished: 0001_sessions
+2022-06-16 07:23:39,904 Running migration: 0002_sessions_aggregates
+2022-06-16 07:23:39,932 Finished: 0002_sessions_aggregates
+2022-06-16 07:23:39,936 Running migration: 0003_sessions_matview
+2022-06-16 07:23:39,948 Finished: 0003_sessions_matview
+2022-06-16 07:23:39,952 Running migration: 0001_sets_aggregate_table
+2022-06-16 07:23:39,976 Finished: 0001_sets_aggregate_table
+2022-06-16 07:23:39,980 Running migration: 0002_sets_raw_table
+2022-06-16 07:23:39,984 Finished: 0002_sets_raw_table
+2022-06-16 07:23:39,989 Running migration: 0003_sets_mv
+2022-06-16 07:23:40,001 Finished: 0003_sets_mv
+Finished running migrations
+
+▶ Creating additional Kafka topics ...
+Container sentry-self-hosted-zookeeper-1  Running
+Container sentry-self-hosted-zookeeper-1  Waiting
+Container sentry-self-hosted-zookeeper-1  Healthy
+Created topic ingest-attachments.
+
+Container sentry-self-hosted-zookeeper-1  Running
+Container sentry-self-hosted-zookeeper-1  Waiting
+Container sentry-self-hosted-zookeeper-1  Healthy
+Created topic ingest-transactions.
+
+Container sentry-self-hosted-zookeeper-1  Running
+Container sentry-self-hosted-zookeeper-1  Waiting
+Container sentry-self-hosted-zookeeper-1  Healthy
+Created topic ingest-events.
+
+
+▶ Ensuring proper PostgreSQL version ...
+
+▶ Setting up / migrating database ...
+Container sentry-self-hosted-memcached-1  Creating
+Container sentry-self-hosted-symbolicator-1  Creating
+Container sentry-self-hosted-postgres-1  Creating
+Container sentry-self-hosted-smtp-1  Creating
+Container sentry-self-hosted-zookeeper-1  Running
+Container sentry-self-hosted-redis-1  Running
+Container sentry-self-hosted-kafka-1  Running
+Container sentry-self-hosted-clickhouse-1  Running
+Container sentry-self-hosted-snuba-api-1  Creating
+Container sentry-self-hosted-snuba-consumer-1  Creating
+Container sentry-self-hosted-snuba-subscription-consumer-events-1  Creating
+Container sentry-self-hosted-snuba-transactions-consumer-1  Creating
+Container sentry-self-hosted-snuba-sessions-consumer-1  Creating
+Container sentry-self-hosted-snuba-outcomes-consumer-1  Creating
+Container sentry-self-hosted-snuba-subscription-consumer-transactions-1  Creating
+Container sentry-self-hosted-snuba-replacer-1  Creating
+Container sentry-self-hosted-postgres-1  Created
+Container sentry-self-hosted-smtp-1  Created
+Container sentry-self-hosted-snuba-sessions-consumer-1  Created
+Container sentry-self-hosted-snuba-subscription-consumer-events-1  Created
+Container sentry-self-hosted-snuba-api-1  Created
+Container sentry-self-hosted-snuba-subscription-consumer-transactions-1  Created
+Container sentry-self-hosted-memcached-1  Created
+Container sentry-self-hosted-snuba-consumer-1  Created
+Container sentry-self-hosted-snuba-transactions-consumer-1  Created
+Container sentry-self-hosted-symbolicator-1  Created
+Container sentry-self-hosted-snuba-outcomes-consumer-1  Created
+Container sentry-self-hosted-snuba-replacer-1  Created
+Container sentry-self-hosted-smtp-1  Starting
+Container sentry-self-hosted-postgres-1  Starting
+Container sentry-self-hosted-memcached-1  Starting
+Container sentry-self-hosted-symbolicator-1  Starting
+Container sentry-self-hosted-zookeeper-1  Waiting
+Container sentry-self-hosted-postgres-1  Started
+Container sentry-self-hosted-zookeeper-1  Healthy
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-clickhouse-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-kafka-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-redis-1  Waiting
+Container sentry-self-hosted-symbolicator-1  Started
+Container sentry-self-hosted-memcached-1  Started
+Container sentry-self-hosted-smtp-1  Started
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-kafka-1  Healthy
+Container sentry-self-hosted-snuba-sessions-consumer-1  Starting
+Container sentry-self-hosted-snuba-consumer-1  Starting
+Container sentry-self-hosted-snuba-outcomes-consumer-1  Starting
+Container sentry-self-hosted-snuba-transactions-consumer-1  Starting
+Container sentry-self-hosted-clickhouse-1  Healthy
+Container sentry-self-hosted-snuba-subscription-consumer-events-1  Starting
+Container sentry-self-hosted-snuba-subscription-consumer-transactions-1  Starting
+Container sentry-self-hosted-snuba-replacer-1  Starting
+Container sentry-self-hosted-redis-1  Healthy
+Container sentry-self-hosted-snuba-api-1  Starting
+Container sentry-self-hosted-snuba-sessions-consumer-1  Started
+Container sentry-self-hosted-snuba-consumer-1  Started
+Container sentry-self-hosted-snuba-transactions-consumer-1  Started
+Container sentry-self-hosted-snuba-outcomes-consumer-1  Started
+Container sentry-self-hosted-snuba-subscription-consumer-transactions-1  Started
+Container sentry-self-hosted-snuba-replacer-1  Started
+Container sentry-self-hosted-snuba-subscription-consumer-events-1  Started
+Container sentry-self-hosted-snuba-api-1  Started
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+07:24:24 [WARNING] sentry.utils.geo: Error opening GeoIP database: /geoip/GeoLite2-City.mmdb
+07:24:24 [WARNING] sentry.utils.geo: Error opening GeoIP database in Rust: /geoip/GeoLite2-City.mmdb
+07:24:26 [INFO] sentry.plugins.github: apps-not-configured
+Running migrations for default
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, nodestore, sentry, sessions, sites, social_auth
+Running migrations:
+  Applying sentry.0001_squashed_0200_release_indices... OK
+  Applying contenttypes.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0001_initial... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying nodestore.0001_initial... OK
+  Applying nodestore.0002_nodestore_no_dictfield... OK
+  Applying sentry.0201_semver_package... OK
+  Applying sentry.0202_org_slug_upper_idx... OK
+  Applying sentry.0203_groupedmessage_status_index... OK
+  Applying sentry.0204_use_project_team_for_team_key_transactions... OK
+  Applying sentry.0205_semver_backfill... OK
+  Applying sentry.0206_organization_require_email_verification_flag... OK
+  Applying sentry.0207_release_adoption... OK
+  Applying sentry.0208_add_team_scope... OK
+  Applying sentry.0209_avatar_remove_file_fk... OK
+  Applying sentry.0210_backfill_project_transaction_thresholds... OK
+  Applying sentry.0211_add_artifact_count... OK
+  Applying sentry.0212_appconnectbuilds... OK
+  Applying sentry.0213_rule_project_status_owner_index... OK
+  Applying sentry.0214_activity_project_type_datetime_idx... OK
+  Applying sentry.0215_fix_state... OK
+  Applying sentry.0216_cdc_setup_replication_index... OK
+  Applying sentry.0217_debugfile_remove_project_fk... OK
+  Applying sentry.0218_releasefile_remove_fks... OK
+  Applying sentry.0219_exporteddatablob_remove_blob_fk... OK
+  Applying sentry.0220_add_current_release_version_group_resolution... OK
+  Applying sentry.0221_add_appconnect_upload_dates... OK
+  Applying sentry.0222_add_datetime_index_to_auditlogentry... OK
+  Applying sentry.0223_semver_backfill_2... OK
+  Applying sentry.0224_has_sessions_flag... OK
+  Applying sentry.0225_latest_appconnect_builds_check... OK
+  Applying sentry.0226_add_visits... OK
+  Applying sentry.0227_backfill_visits... OK
+  Applying sentry.0228_update_auditlog_index_with_entry... OK
+  Applying sentry.0229_drop_jiratenant... OK
+  Applying sentry.0230_sentry_app_config_jsonfield... OK
+  Applying sentry.0231_alert_rule_comparison_delta... OK
+  Applying sentry.0232_backfill_missed_semver_releases... OK
+  Applying sentry.0233_recreate_subscriptions_in_snuba... OK
+  Applying sentry.0234_grouphistory... OK
+  Applying sentry.0235_add_metricskeyindexer_table... OK
+  Applying sentry.0236_remove_legacy_key_transactions... OK
+  Applying sentry.0237_recreate_subscriptions_in_snuba... OK
+  Applying sentry.0238_remove_scheduleddeletion_aborted... OK
+  Applying sentry.0239_drop_scheduleddeletion_aborted... OK
+  Applying sentry.0240_grouphistory_index... OK
+  Applying sentry.0241_grouphistory_null_actor... OK
+  Applying sentry.0242_delete_removed_plugin_data... OK
+  Applying sentry.0243_delete_visualstudio_repo_data... OK
+  Applying sentry.0244_organization_and_integration_foreign_keys... OK
+  Applying sentry.0245_delete_itunes_credentials... OK
+  Applying sentry.0246_incident_snapshots_remove_fks... OK
+  Applying sentry.0247_add_color_column... OK
+  Applying sentry.0248_add_popularity_column... OK
+  Applying sentry.0249_add_avatar_type_back... OK
+  Applying sentry.0250_backfill_popularity... OK
+  Applying sentry.0251_sentryappavatar_sentryapp_not_unique... OK
+  Applying sentry.0252_code_mapping_cascade_delete... OK
+  Applying sentry.0253_add_widget_type... OK
+  Applying sentry.0254_org_integration_grace_period_end... OK
+  Applying sentry.0255_delete_code_mappings_with_no_integration... OK
+  Applying sentry.0256_create_docintegration_table... OK
+  Applying sentry.0257_add_target_id_and_type_to_integrationfeature... OK
+  Applying sentry.0258_create_docintegrationavatar_table... OK
+  Applying sentry.0259_delete_codeowners_and_code_mappings_with_no_integration... OK
+  Applying sentry.0260_backfill_integrationfeature... OK
+  Applying sentry.0261_prepare_remove_sentry_app_column... OK
+  Applying sentry.0262_drop_sentry_app_from_integrationfeature... OK
+  Applying sentry.0263_remove_not_null_integrationfeature... OK
+  Applying sentry.0264_use_booleanfield_docintegration... OK
+  Applying sentry.0265_add_userrole... OK
+  Applying sentry.0266_add_dashboard_widget_detail_field... OK
+  Applying sentry.0267_sentry_release_version_btree... OK
+  Applying sentry.0268_rename_issue_widget_query_fields... OK
+  Applying sentry.0269_alertrule_remove_unique_name... OK
+  Applying sentry.0270_group_history_project_date_added_index... OK
+  Applying sentry.0271_add_codeowners_auto_sync_setting... OK
+  Applying sentry.0272_seq_scan_indexes... OK
+  Applying sentry.0273_fix_grouplink_seqscans... OK
+  Applying sentry.0274_add_dashboardwidgetquery_columns_aggregates... OK
+  Applying sentry.0275_rule_fire_history... OK
+  Applying sentry.0276_rulefirehistory_date_added_index... OK
+  Applying sentry.0277_backfill_dashboard_widget_query_columns_aggregates... OK
+  Applying sentry.0278_backfill_codeowners_auto_sync_setting... OK
+  Applying sentry.0279_add_limit_dashboard_widget... OK
+  Applying sentry.0280_extend_commit_author_email_length... OK
+  Applying sentry.0281_add_new_indexer_table... OK
+  Applying sentry.0282_add_field_aliases_dashboard_widget_query... OK
+  Applying sentry.0283_extend_externalissue_key... OK
+  Applying sentry.0284_metrics_indexer_alter_seq... OK
+  Applying sentry.0285_add_organization_member_team_role... OK
+  Applying sentry.0286_backfill_alertrule_organization... OK
+  Applying sentry.0287_backfill_snubaquery_environment... OK
+  Applying sentry.0288_fix_savedsearch_state... OK
+  Applying sentry.0289_dashboardwidgetquery_convert_orderby_to_field... OK
+  Applying sentry.0290_fix_project_has_releases... OK
+  Applying sentry.0291_add_new_perf_indexer... OK
+  Applying sessions.0001_initial... OK
+  Applying sites.0001_initial... OK
+  Applying sites.0002_alter_domain_unique... OK
+  Applying social_auth.0001_initial... OK
+07:24:53 [WARNING] sentry: Cannot initiate onboarding for organization (1) due to missing owners
+Created internal Sentry project (slug=internal, id=1)
+
+Would you like to create a user account now? [Y/n]:/usr/local/lib/python3.8/site-packages/memcache.py:1303: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if key is '':
+/usr/local/lib/python3.8/site-packages/memcache.py:1304: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if key_extra_len is 0:
+ Email: Email: Email: Password:/usr/local/lib/python3.8/getpass.py:91: GetPassWarning: Can not control echo on the terminal.
+  passwd = fallback_getpass(prompt, stream)
+Warning: Password input may be echoed.
+ Repeat for confirmation:
+Warning: Password input may be echoed.
+ Added to organization: sentry
+Should this user have Super Admin role? (This grants them all permissions available) [y/N]: 
+User created: xxx@foxmail.com
+Creating missing DSNs
+Correcting Group.num_comments counter
+
+▶ Migrating file storage ...
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+2408cc74d12b: Pulling fs layer
+2408cc74d12b: Verifying Checksum
+2408cc74d12b: Download complete
+2408cc74d12b: Pull complete
+Digest: sha256:686d8c9dfa6f3ccfc8230bc3178d23f84eeaf7e457f36f271ab1acc53015037c
+Status: Downloaded newer image for alpine:latest
+
+▶ Setting up GeoIP integration ...
+Setting up IP address geolocation ...
+Installing (empty) IP address geolocation database ... done.
+IP address geolocation is not configured for updates.
+See https://develop.sentry.dev/self-hosted/geolocation/ for instructions.
+Error setting up IP address geolocation.
+
+
+-----------------------------------------------------------------
+
+You're all done! Run the following command to get Sentry running:
+
+  docker compose up -d
+
+-----------------------------------------------------------------
+
