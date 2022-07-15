@@ -39,7 +39,7 @@ DATABASES = {
         "NAME": "postgres",
         "USER": "postgres",
         "PASSWORD": "",
-        "HOST": "postgres",
+        "HOST": "172.17.183.16",
         "PORT": "",
     }
 }
@@ -72,7 +72,7 @@ SENTRY_OPTIONS["system.event-retention-days"] = int(
 
 SENTRY_OPTIONS["redis.clusters"] = {
     "default": {
-        "hosts": {0: {"host": "redis", "password": "", "port": "6379", "db": "0"}}
+        "hosts": {0: {"host": "172.17.183.16", "password": "", "port": "6379", "db": "0"}}
     }
 }
 
@@ -105,7 +105,7 @@ else:
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
-        "LOCATION": ["memcached:11211"],
+        "LOCATION": ["172.17.183.16:11211"],
         "TIMEOUT": 3600,
     }
 }
@@ -114,7 +114,7 @@ CACHES = {
 SENTRY_CACHE = "sentry.cache.redis.RedisCache"
 
 DEFAULT_KAFKA_OPTIONS = {
-    "bootstrap.servers": "kafka:9092",
+    "bootstrap.servers": "172.17.183.16:9092",
     "message.max.bytes": 50000000,
     "socket.timeout.ms": 1000,
 }
@@ -183,7 +183,7 @@ SENTRY_DIGESTS = "sentry.digests.backends.redis.RedisBackend"
 ##############
 
 SENTRY_WEB_HOST = "0.0.0.0"
-SENTRY_WEB_PORT = 9001
+SENTRY_WEB_PORT = 9000
 SENTRY_WEB_OPTIONS = {
     "http": "%s:%s" % (SENTRY_WEB_HOST, SENTRY_WEB_PORT),
     "protocol": "uwsgi",

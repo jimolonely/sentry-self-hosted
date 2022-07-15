@@ -22,14 +22,14 @@ x-sentry-defaults: &sentry_defaults
     args:
       - SENTRY_IMAGE
   depends_on:
-    redis:
-      <<: *depends_on-healthy
-    kafka:
-      <<: *depends_on-healthy
-    postgres:
-      <<: *depends_on-healthy
-    memcached:
-      <<: *depends_on-default
+#    redis:
+#      <<: *depends_on-healthy
+#    kafka:
+#      <<: *depends_on-healthy
+#    postgres:
+#      <<: *depends_on-healthy
+#    memcached:
+#      <<: *depends_on-default
     smtp:
       <<: *depends_on-default
     snuba-api:
@@ -75,19 +75,19 @@ x-sentry-defaults: &sentry_defaults
     - "./certificates:/usr/local/share/ca-certificates:ro"
 x-snuba-defaults: &snuba_defaults
   <<: *restart_policy
-  depends_on:
-    clickhouse:
-      <<: *depends_on-healthy
-    kafka:
-      <<: *depends_on-healthy
-    redis:
-      <<: *depends_on-healthy
+#  depends_on:
+#    clickhouse:
+#      <<: *depends_on-healthy
+#    kafka:
+#      <<: *depends_on-healthy
+#    redis:
+#      <<: *depends_on-healthy
   image: "$SNUBA_IMAGE"
   environment:
     SNUBA_SETTINGS: distributed
-    CLICKHOUSE_HOST: clickhouse
-    DEFAULT_BROKERS: "kafka:9092"
-    REDIS_HOST: redis
+    CLICKHOUSE_HOST: 172.17.183.16
+    DEFAULT_BROKERS: "172.17.183.16:9092"
+    REDIS_HOST: 172.17.183.16
     UWSGI_MAX_REQUESTS: "10000"
     UWSGI_DISABLE_LOGGING: "true"
     # Leaving the value empty to just pass whatever is set
@@ -240,25 +240,11 @@ services:
         source: ./geoip
         target: /geoip
     depends_on:
-      kafka:
-        <<: *depends_on-healthy
-      redis:
-        <<: *depends_on-healthy
       web:
         <<: *depends_on-healthy
 volumes:
   # These store application data that should persist across restarts.
   sentry-data:
-    external: true
-  sentry-postgres:
-    external: true
-  sentry-redis:
-    external: true
-  sentry-zookeeper:
-    external: true
-  sentry-kafka:
-    external: true
-  sentry-clickhouse:
     external: true
   sentry-symbolicator:
     external: true
@@ -267,7 +253,4 @@ volumes:
   sentry-secrets:
   sentry-smtp:
   sentry-nginx-cache:
-  sentry-zookeeper-log:
-  sentry-kafka-log:
   sentry-smtp-log:
-  sentry-clickhouse-log:

@@ -6,8 +6,6 @@ services:
       - '6379:6379'
     healthcheck:
       test: redis-cli ping
-    volumes:
-      - "sentry-redis:/data"
     ulimits:
       nofile:
         soft: 10032
