@@ -1,0 +1,14 @@
+version: "3"
+services:
+  redis:
+    image: "redis:6.2.4-alpine"
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: redis-cli ping
+    volumes:
+      - "sentry-redis:/data"
+    ulimits:
+      nofile:
+        soft: 10032
+        hard: 10032

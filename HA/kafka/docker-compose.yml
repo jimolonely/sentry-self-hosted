@@ -1,0 +1,30 @@
+version: "3"
+services:
+  zookeeper:
+    image: "confluentinc/cp-zookeeper:5.5.0"
+    ports:
+      - '2181:2181'
+    environment:
+      ZOOKEEPER_CLIENT_PORT: "2181"
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: "WARN"
+      ZOOKEEPER_TOOLS_LOG4J_LOGLEVEL: "WARN"
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=ruok"
+  kafka:
+    depends_on:
+      - zookeeper
+    image: "confluentinc/cp-kafka:5.5.0"
+    ports:
+      - '9092:9092'
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS: "1"
+      KAFKA_LOG_RETENTION_HOURS: "24"
+      KAFKA_MESSAGE_MAX_BYTES: "50000000" #50MB or bust
+      KAFKA_MAX_REQUEST_SIZE: "50000000" #50MB on requests apparently too
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      KAFKA_LOG4J_LOGGERS: "kafka.cluster=WARN,kafka.controller=WARN,kafka.coordinator=WARN,kafka.log=WARN,kafka.server=WARN,kafka.zookeeper=WARN,state.change.logger=WARN"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: "WARN"
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: "WARN"

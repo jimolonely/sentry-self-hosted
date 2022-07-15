@@ -1,0 +1,9 @@
+version: "3"
+services:
+  memcached:
+    image: "memcached:1.6.9-alpine"
+    ports:
+      - '11211:11211'
+    healthcheck:
+      # From: https://stackoverflow.com/a/31877626/5155484
+      test: echo stats | nc 127.0.0.1 11211
