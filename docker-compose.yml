@@ -84,7 +84,7 @@ x-snuba-defaults: &snuba_defaults
       <<: *depends_on-healthy
   image: "$SNUBA_IMAGE"
   environment:
-    SNUBA_SETTINGS: docker
+    SNUBA_SETTINGS: distributed
     CLICKHOUSE_HOST: clickhouse
     DEFAULT_BROKERS: "kafka:9092"
     REDIS_HOST: redis
@@ -200,7 +200,7 @@ services:
       - "sentry-clickhouse-log:/var/log/clickhouse-server"
       - type: bind
         read_only: true
-        source: ./clickhouse/config.xml
+        source: ./clickhouse/dist_config.xml
         target: /etc/clickhouse-server/config.d/sentry.xml
     environment:
       # This limits Clickhouse's memory to 30% of the host memory
