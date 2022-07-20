@@ -5,12 +5,12 @@ metadata:
   labels:
     app: foo
 spec:
+  hostNetwork: true
   containers:
     - name: foo-app
       image: hashicorp/http-echo:0.2.3
       ports:
         - containerPort: 5678
-          hostPort: 30001
       args:
         - "-text=foo"
 ---
