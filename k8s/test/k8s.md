@@ -87,6 +87,6 @@ spec:
   containers:
     - name: sentry-snuba-consumer
       image: getsentry/snuba:22.6.0
-      command: ["consumer --storage errors --auto-offset-reset=latest --max-batch-time-ms 750"]
+      command: ["consumer", "--storage", "errors", "--auto-offset-reset=latest", "--max-batch-time-ms", "750"]
 ```
 
