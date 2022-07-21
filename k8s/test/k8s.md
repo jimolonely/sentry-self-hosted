@@ -90,3 +90,61 @@ spec:
       command: ["consumer", "--storage", "errors", "--auto-offset-reset=latest", "--max-batch-time-ms", "750"]
 ```
 
+# ImagePullBackOff如何排查
+
+```shell
+$ kubectl get pods
+NAME               READY   STATUS             RESTARTS       AGE
+sentry-web         0/1     ImagePullBackOff   0              4m55s
+```
+使用 `kubectl describe pod sentry-web` 查看输出：
+```shell
+$ kubectl describe pod sentry-web
+Name:         sentry-web
+Namespace:    default
+...省略
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  4m50s                  default-scheduler  Successfully assigned default/sentry-web to kind-control-plane
+  Normal   Pulling    3m14s (x4 over 4m51s)  kubelet            Pulling image "sentry-self-hosted-local"
+  Warning  Failed     3m10s (x4 over 4m44s)  kubelet            Failed to pull image "sentry-self-hosted-local": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/sentry-self-hosted-local:latest": failed to resolve reference "docker.io/library/sentry-self-hosted-local:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     3m10s (x4 over 4m44s)  kubelet            Error: ErrImagePull
+  Warning  Failed     2m44s (x6 over 4m43s)  kubelet            Error: ImagePullBackOff
+  Normal   BackOff    2m29s (x7 over 4m43s)  kubelet            Back-off pulling image "sentry-self-hosted-local"
+```
+
+发现原因是 
+```shell
+failed to pull and unpack image "docker.io/library/sentry-self-hosted-local:latest"
+```
+
+再看我的配置文件：
+
+```yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-web
+  labels:
+    app: sentry
+spec:
+  hostNetwork: true
+  containers:
+    - name: sentry-web
+      image: sentry-self-hosted-local
+```
+
+虽然我本地有，但是他还是去拉远程，原因是我没写tag，同时优先使用本地：
+
+```yaml
+spec:
+  hostNetwork: true
+  containers:
+    - name: sentry-web
+      image: sentry-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+```
+
+
+

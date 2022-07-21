@@ -1,57 +1,55 @@
-kind: Pod
-apiVersion: v1
-metadata:
-  name: sentry-relay
-  labels:
-    app: sentry
-spec:
-  containers:
-    - name: sentry-relay
-      image: getsentry/relay:22.6.0
-      volumeMounts:
-        - mountPath: /work/.relay
-          name: v-relay-config
-        - mountPath: /geoip
-          name: v-relay-geoip
-  volumes:
-    - name: v-relay-config
-      hostPath:
-        # 相对路径不行
-        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/relay
-        type: DirectoryOrCreate
-    - name: v-relay-geoip
-      hostPath:
-        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/geoip
-        type: DirectoryOrCreate
----
-kind: Pod
-apiVersion: v1
-metadata:
-  name: sentry-snuba-api
-  labels:
-    app: sentry
-spec:
-  containers:
-    - name: sentry-snuba-api
-      image: getsentry/snuba:22.6.0
-      env:
-        - name: SNUBA_SETTINGS
-          value: "distributed"
-        - name: CLICKHOUSE_HOST
-          value: "172.17.183.16"
-        - name: DEFAULT_BROKERS
-          value: "172.17.183.16:9092"
-        - name: REDIS_HOST
-          value: 172.17.183.16
-        - name: UWSGI_MAX_REQUESTS
-          value: "10000"
-        - name: UWSGI_DISABLE_LOGGING
-          value: "true"
-        # Leaving the value empty to just pass whatever is set
-        # on the host system (or in the .env file)
-        - name: SENTRY_EVENT_RETENTION_DAYS
-          value:
----
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#  name: sentry-relay
+#  labels:
+#    app: sentry
+#spec:
+#  containers:
+#    - name: sentry-relay
+#      image: getsentry/relay:22.6.0
+#      volumeMounts:
+#        - mountPath: /work/.relay
+#          name: v-relay-config
+#        - mountPath: /geoip
+#          name: v-relay-geoip
+#  volumes:
+#    - name: v-relay-config
+#      hostPath:
+#        # 相对路径不行
+#        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/relay
+#    - name: v-relay-geoip
+#      hostPath:
+#        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/geoip
+#---
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#  name: sentry-snuba-api
+#  labels:
+#    app: sentry
+#spec:
+#  containers:
+#    - name: sentry-snuba-api
+#      image: getsentry/snuba:22.6.0
+#      env:
+#        - name: SNUBA_SETTINGS
+#          value: "distributed"
+#        - name: CLICKHOUSE_HOST
+#          value: "172.17.183.16"
+#        - name: DEFAULT_BROKERS
+#          value: "172.17.183.16:9092"
+#        - name: REDIS_HOST
+#          value: 172.17.183.16
+#        - name: UWSGI_MAX_REQUESTS
+#          value: "10000"
+#        - name: UWSGI_DISABLE_LOGGING
+#          value: "true"
+#        # Leaving the value empty to just pass whatever is set
+#        # on the host system (or in the .env file)
+#        - name: SENTRY_EVENT_RETENTION_DAYS
+#          value:
+#---
 #kind: Pod
 #apiVersion: v1
 #metadata:
@@ -318,8 +316,78 @@ spec:
 #
 #
 
+#
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#  name: sentry-web
+#  labels:
+#    app: sentry
+#spec:
+#  hostNetwork: true
+#  containers:
+#    - name: sentry-web
+#      image: sentry-self-hosted-local:latest
+#      imagePullPolicy: Never  # or IfNotPresent
+#      command: [ "/etc/sentry/entrypoint.sh" ]
+#      args: [ "run", "web" ]
+#      ports:
+#        - containerPort: 9000
+#      env:
+#        - name: PYTHONUSERBASE
+#          value: "/data/custom-packages"
+#        - name: SENTRY_CONF
+#          value: "/etc/sentry"
+#        - name: SNUBA
+#          value: "http://sentry-snuba-api:1218"
+#        - name: DEFAULT_CA_BUNDLE
+#          value: &ca_bundle "/etc/ssl/certs/ca-certificates.crt"
+#          # This one is used by requests
+#        - name: REQUESTS_CA_BUNDLE
+#          value: *ca_bundle
+#          # This one is used by grpc/google modules
+#        - name: GRPC_DEFAULT_SSL_ROOTS_FILE_PATH_ENV_VAR
+#          value: *ca_bundle
+#          # Leaving the value empty to just pass whatever is set
+#          # on the host system (or in the .env file)
+#        - name: SENTRY_EVENT_RETENTION_DAYS
+#          value:
+#        - name: SENTRY_MAIL_HOST
+#          value:
+#      volumeMounts:
+#        - mountPath: /etc/sentry
+#          name: v-sentry-config
+#        - mountPath: /geoip
+#          name: v-sentry-geoip
+#  volumes:
+#    - name: v-sentry-config
+#      hostPath:
+#        # 相对路径不行
+#        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/sentry
+#    - name: v-sentry-geoip
+#      hostPath:
+#        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/geoip
+#---
 
 
 
 
 
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-web
+  labels:
+    app: test
+spec:
+  containers:
+    - image: centos/httpd
+      name: test-web
+      volumeMounts:
+        - mountPath: /web/
+          name: test-volume
+  volumes:
+    - name: test-volume
+      hostPath:
+        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/sentry/config.yml
+        type:
