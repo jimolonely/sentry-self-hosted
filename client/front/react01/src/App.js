@@ -33,6 +33,16 @@ function req() {
   }
 }
 
+function req_error() {
+  throw new TypeError("我错了");
+}
+
+function req_fetch() {
+  fetch('https://jsonplaceholder.typicode.com/users/2')
+    .then(response => response.json())
+    .then(data => console.log(data));
+}
+
 function App() {
   return (
     <div className="App">
@@ -45,8 +55,20 @@ function App() {
           className="App-link"
           onClick={req}
         >
-          发起请求
+          发起axios请求
         </a>
+        <a
+          className="App-link"
+          onClick={req_error}
+        >
+          报错呀
+        </a>
+        <button
+          className="App-link"
+          onClick={req_fetch}
+        >
+          发起fetch请求
+        </button>
       </header>
     </div>
   );
