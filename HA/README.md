@@ -5,3 +5,10 @@
 而对应的中间件地址很可能不在一台机器上，所以，搜索这个IP，替换成你环境的IP或域名。
 
 要容器内能访问的地址。
+
+
+# 创建用户
+
+```shell
+docker-compose run web createuser
+```
