@@ -53,6 +53,37 @@ $ npm install axios
 
 [https://docs.sentry.io/platforms/javascript/performance/instrumentation/custom-instrumentation/](https://docs.sentry.io/platforms/javascript/performance/instrumentation/custom-instrumentation/)
 
+```js
+function req() {
+  // This will create a new Transaction for you
+  const transaction = Sentry.startTransaction({ name: "访问用户" });
+  // Set transaction on scope to associate with errors and get included span instrumentation
+  // If there's currently an unfinished transaction, it may be dropped
+  Sentry.getCurrentHub().configureScope(scope => scope.setSpan(transaction));
+
+  const span = transaction.startChild({
+    data: {},
+    op: 'http',
+    description: `GET /users/2`,
+  });
+
+  try {
+    axios.get(`https://jsonplaceholder.typicode.com/users/2`)
+      .then(res => {
+        console.log(res);
+        span.setHttpStatus(res.status);
+        span.setTag("http.status_code", res.status);
+        span.setData("http.data", res.data);
+      });
+  } catch (err) {
+    span.setHttpStatus(500);
+  } finally {
+    span.finish();
+    transaction.finish();
+  }
+}
+```
+
 
 
 
