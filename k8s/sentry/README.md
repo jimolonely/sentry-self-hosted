@@ -1,4 +1,15 @@
 
+# 先看这
+
+国外有人实践过：[https://uala.io/how-to-install-sentry-20-in-kubernetes/](https://uala.io/how-to-install-sentry-20-in-kubernetes/)
+
+使用开源的helm：[https://github.com/sentry-kubernetes/charts](https://github.com/sentry-kubernetes/charts)
+
+不过目前helm还没学习，难以继续。
+
+本地用Kind搭的k8s集群问题也挺多。
+
+
 # 加载镜像到kind里
 
 ```shell
