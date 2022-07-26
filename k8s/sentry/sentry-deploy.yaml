@@ -269,7 +269,7 @@ spec:
         # on the host system (or in the .env file)
         - name: SENTRY_EVENT_RETENTION_DAYS
           value:
-      command: ["snuba",  "subscriptions-scheduler-executor", "--dataset", "transactions", "--entity", "transactions", "--auto-offset-reset=latest","--no-strict-offset-reset", "--consumer-group=snuba-transactions-subscriptions-consumers", "--followed-consumer-group=transactions_group", "--delay-seconds=60", "--schedule-ttl=60", "--stale-threshold-seconds=900" ]
+      command: [ "snuba",  "subscriptions-scheduler-executor", "--dataset", "transactions", "--entity", "transactions", "--auto-offset-reset=latest","--no-strict-offset-reset", "--consumer-group=snuba-transactions-subscriptions-consumers", "--followed-consumer-group=transactions_group", "--delay-seconds=60", "--schedule-ttl=60", "--stale-threshold-seconds=900" ]
 ---
 kind: Pod
 apiVersion: v1
@@ -309,9 +309,9 @@ metadata:
     app: sentry
 spec:
   containers:
-    - name: sentry-snuba-transactions-cleanup:latest
+    - name: sentry-snuba-transactions-cleanup
       imagePullPolicy: Never  # or IfNotPresent
-      image: snuba-cleanup-self-hosted-local
+      image: snuba-cleanup-self-hosted-local:latest
       env:
         - name: SNUBA_SETTINGS
           value: "distributed"
@@ -450,8 +450,246 @@ spec:
       hostPath:
         path: /sentry/geoip
 ---
-
-
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-worker
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-worker
+      image: sentry-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      command: [ "/etc/sentry/entrypoint.sh" ]
+      args: [ "run", "worker" ]
+      env:
+        - name: PYTHONUSERBASE
+          value: "/data/custom-packages"
+        - name: SENTRY_CONF
+          value: "/etc/sentry"
+        - name: SNUBA
+          value: "http://sentry-snuba-api:1218"
+        - name: DEFAULT_CA_BUNDLE
+          value: &ca_bundle "/etc/ssl/certs/ca-certificates.crt"
+          # This one is used by requests
+        - name: REQUESTS_CA_BUNDLE
+          value: *ca_bundle
+          # This one is used by grpc/google modules
+        - name: GRPC_DEFAULT_SSL_ROOTS_FILE_PATH_ENV_VAR
+          value: *ca_bundle
+          # Leaving the value empty to just pass whatever is set
+          # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value: "90"
+        - name: SENTRY_MAIL_HOST
+          value: sentry-mail
+      volumeMounts:
+        - mountPath: /etc/sentry
+          name: v-sentry-config
+        - mountPath: /geoip
+          name: v-sentry-geoip
+  volumes:
+    - name: v-sentry-config
+      hostPath:
+        # 相对路径不行
+        path: /sentry/sentry
+    - name: v-sentry-geoip
+      hostPath:
+        path: /sentry/geoip
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-ingest-consumer
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-ingest-consumer
+      image: sentry-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      command: [ "/etc/sentry/entrypoint.sh" ]
+      args: [ "run", "ingest-consumer","--all-consumer-types" ]
+      env:
+        - name: PYTHONUSERBASE
+          value: "/data/custom-packages"
+        - name: SENTRY_CONF
+          value: "/etc/sentry"
+        - name: SNUBA
+          value: "http://sentry-snuba-api:1218"
+        - name: DEFAULT_CA_BUNDLE
+          value: &ca_bundle "/etc/ssl/certs/ca-certificates.crt"
+          # This one is used by requests
+        - name: REQUESTS_CA_BUNDLE
+          value: *ca_bundle
+          # This one is used by grpc/google modules
+        - name: GRPC_DEFAULT_SSL_ROOTS_FILE_PATH_ENV_VAR
+          value: *ca_bundle
+          # Leaving the value empty to just pass whatever is set
+          # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value: "90"
+        - name: SENTRY_MAIL_HOST
+          value: sentry-mail
+      volumeMounts:
+        - mountPath: /etc/sentry
+          name: v-sentry-config
+        - mountPath: /geoip
+          name: v-sentry-geoip
+  volumes:
+    - name: v-sentry-config
+      hostPath:
+        # 相对路径不行
+        path: /sentry/sentry
+    - name: v-sentry-geoip
+      hostPath:
+        path: /sentry/geoip
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-post-process-forwarder
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-post-process-forwarder
+      image: sentry-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      command: [ "/etc/sentry/entrypoint.sh" ]
+      args: [ "run", "post-process-forwarder","--commit-batch-size" ,"1" ]
+      env:
+        - name: PYTHONUSERBASE
+          value: "/data/custom-packages"
+        - name: SENTRY_CONF
+          value: "/etc/sentry"
+        - name: SNUBA
+          value: "http://sentry-snuba-api:1218"
+        - name: DEFAULT_CA_BUNDLE
+          value: &ca_bundle "/etc/ssl/certs/ca-certificates.crt"
+          # This one is used by requests
+        - name: REQUESTS_CA_BUNDLE
+          value: *ca_bundle
+          # This one is used by grpc/google modules
+        - name: GRPC_DEFAULT_SSL_ROOTS_FILE_PATH_ENV_VAR
+          value: *ca_bundle
+          # Leaving the value empty to just pass whatever is set
+          # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value: "90"
+        - name: SENTRY_MAIL_HOST
+          value: sentry-mail
+      volumeMounts:
+        - mountPath: /etc/sentry
+          name: v-sentry-config
+        - mountPath: /geoip
+          name: v-sentry-geoip
+  volumes:
+    - name: v-sentry-config
+      hostPath:
+        # 相对路径不行
+        path: /sentry/sentry
+    - name: v-sentry-geoip
+      hostPath:
+        path: /sentry/geoip
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-subscription-consumer-events
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-subscription-consumer-events
+      image: sentry-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      command: [ "/etc/sentry/entrypoint.sh" ]
+      args: [ "run", "query-subscription-consumer","--commit-batch-size" ,"1", "--topic", "events-subscription-results" ]
+      env:
+        - name: PYTHONUSERBASE
+          value: "/data/custom-packages"
+        - name: SENTRY_CONF
+          value: "/etc/sentry"
+        - name: SNUBA
+          value: "http://sentry-snuba-api:1218"
+        - name: DEFAULT_CA_BUNDLE
+          value: &ca_bundle "/etc/ssl/certs/ca-certificates.crt"
+          # This one is used by requests
+        - name: REQUESTS_CA_BUNDLE
+          value: *ca_bundle
+          # This one is used by grpc/google modules
+        - name: GRPC_DEFAULT_SSL_ROOTS_FILE_PATH_ENV_VAR
+          value: *ca_bundle
+          # Leaving the value empty to just pass whatever is set
+          # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value: "90"
+        - name: SENTRY_MAIL_HOST
+          value: sentry-mail
+      volumeMounts:
+        - mountPath: /etc/sentry
+          name: v-sentry-config
+        - mountPath: /geoip
+          name: v-sentry-geoip
+  volumes:
+    - name: v-sentry-config
+      hostPath:
+        # 相对路径不行
+        path: /sentry/sentry
+    - name: v-sentry-geoip
+      hostPath:
+        path: /sentry/geoip
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-subscription-consumer-transactions
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-subscription-consumer-transactions
+      image: sentry-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      command: [ "/etc/sentry/entrypoint.sh" ]
+      args: [ "run", "query-subscription-consumer","--commit-batch-size" ,"1", "--topic", "transactions-subscription-results" ]
+      env:
+        - name: PYTHONUSERBASE
+          value: "/data/custom-packages"
+        - name: SENTRY_CONF
+          value: "/etc/sentry"
+        - name: SNUBA
+          value: "http://sentry-snuba-api:1218"
+        - name: DEFAULT_CA_BUNDLE
+          value: &ca_bundle "/etc/ssl/certs/ca-certificates.crt"
+          # This one is used by requests
+        - name: REQUESTS_CA_BUNDLE
+          value: *ca_bundle
+          # This one is used by grpc/google modules
+        - name: GRPC_DEFAULT_SSL_ROOTS_FILE_PATH_ENV_VAR
+          value: *ca_bundle
+          # Leaving the value empty to just pass whatever is set
+          # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value: "90"
+        - name: SENTRY_MAIL_HOST
+          value: sentry-mail
+      volumeMounts:
+        - mountPath: /etc/sentry
+          name: v-sentry-config
+        - mountPath: /geoip
+          name: v-sentry-geoip
+  volumes:
+    - name: v-sentry-config
+      hostPath:
+        # 相对路径不行
+        path: /sentry/sentry
+    - name: v-sentry-geoip
+      hostPath:
+        path: /sentry/geoip
+---
 
 
 
