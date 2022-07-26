@@ -53,6 +53,7 @@ kind load docker-image snuba-cleanup-self-hosted-local
 kind load docker-image sentry-self-hosted-local
 kind load docker-image sentry-cleanup-self-hosted-local
 kind load docker-image symbolicator-cleanup-self-hosted-local
+kind load docker-image centos/httpd
 ```
 
 # 查看Kind加载了哪些镜像
@@ -127,8 +128,88 @@ GLOBAL OPTIONS:
    --version, -v                       print the version (default: false)
 ```
 
+# 创建集群sentry pod
+
+```shell
+
+```
+
+# 创建PG表
+
+
+可以看到sentry容器的命令：
+
+```shell
+/# sentry 
+Usage: sentry [OPTIONS] COMMAND [ARGS]...
+
+  Sentry is cross-platform crash reporting built with love.
+
+  The configuration file is looked up in the `~/.sentry` config directory but this can be
+  overridden with the `SENTRY_CONF` environment variable or be explicitly provided through the
+  `--config` parameter.
+
+Options:
+  --config PATH  Path to configuration files.
+  --version      Show the version and exit.
+  --help         Show this message and exit.
+
+Commands:
+  cleanup       Delete a portion of trailing data based on creation date.
+  config        Manage runtime config options.
+  createuser    Create a new user.
+  devserver     Starts a lightweight web server for development.
+  devservices   Manage dependent development services required for Sentry.
+  django        Execute Django subcommands.
+  exec          Execute a script.
+  execfile      Execute a script.
+  export        Exports core metadata for the Sentry installation.
+  files         Manage files from filestore.
+  help          Show this message and exit.
+  import        Imports data from a Sentry export.
+  init          Initialize new configuration directory.
+  killswitches  Manage killswitches for ingestion pipeline.
+  migrations    Manage migrations.
+  permissions   Manage Permissions for Users.
+  plugins       Manage Sentry plugins.
+  queues        Manage Sentry queues.
+  repair        Attempt to repair any invalid data.
+  run           Run a service.
+  shell         Run a Python interactive interpreter.
+  start         DEPRECATED see `sentry run` instead.
+  tsdb          Tools for interacting with the time series database.
+  upgrade       Perform any pending database migrations and upgrades.
+```
+
+在外面初始化库表可以用 `upgrade`:
+
+```shell
+ kubectl exec sentry-web sentry upgrade
+```
+
+# 创建用户
+
+```shell
+ kubectl exec sentry-web sentry createuser
+```
+
+
+# 访问sentry-web
+
+```shell
+$ kubectl get pods -o wide
+NAME         READY   STATUS    RESTARTS      AGE   IP           NODE                 NOMINATED NODE   READINESS GATES
+sentry-web   1/1     Running   3 (41m ago)   42m   172.18.0.2   kind-control-plane   <none>           <none>
+```
+然后浏览器访问：[http://172.18.0.2:9000](http://172.18.0.2:9000)
+
+
+
+
 # 排查错误
 
+
+## 日志
 比如 Error了，看日志知道是因为Kafka缺少Topic。
 
 ```shell
@@ -163,6 +244,35 @@ Traceback (most recent call last):
     raise ConsumerError(str(error))
 arroyo.errors.ConsumerError: KafkaError{code=UNKNOWN_TOPIC_OR_PART,val=3,str="Subscribed topic not available: events: Broker: Unknown topic or partition"}
 ```
+
+## 环境变量
+
+比如服务DNS找不到服务，重启pod后就有了。
+
+```shell
+$ kubectl exec sentry-relay -- printenv
+ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=sentry-relay
+RELAY_UID=10001
+RELAY_GID=10001
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+SENTRY_WEB_SERVICE_HOST=10.96.231.203
+SENTRY_WEB_PORT_9000_TCP=tcp://10.96.231.203:9000
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+SENTRY_WEB_PORT_9000_TCP_PORT=9000
+SENTRY_WEB_PORT_9000_TCP_ADDR=10.96.231.203
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_PORT_443_TCP_PORT=443
+SENTRY_WEB_SERVICE_PORT=9000
+SENTRY_WEB_PORT=tcp://10.96.231.203:9000
+SENTRY_WEB_PORT_9000_TCP_PROTO=tcp
+HOME=/root
+```
+
 
 
 

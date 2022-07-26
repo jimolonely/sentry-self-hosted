@@ -38,7 +38,7 @@ services:
         hard: 262144
     ports:
       - '8123:8123'
-      - '9000:9000'
+      - '9003:9000'
     volumes:
       - type: bind
         read_only: true
