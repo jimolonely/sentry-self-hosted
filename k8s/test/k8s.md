@@ -176,3 +176,44 @@ Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
 nslookup: can't resolve 'sentry-web'
 ```
 
+## 特别注意
+
+如果使用了 `hostNetwork`, 那么是无法接入k8s的DNS的，原因可以查看解析文件。
+
+如下服务：
+
+```yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-relay
+  labels:
+    app: sentry
+spec:
+  hostNetwork: true
+  containers:
+    - name: sentry-relay
+      image: getsentry/relay:22.6.0
+      ports:
+        - containerPort: 3000
+```
+
+其 `/etc/resolv.conf`为：
+
+```shell
+ cat /etc/resolv.conf 
+nameserver 172.18.0.1
+options ndots:0
+```
+
+而正常k8s内网pod里的是：
+
+```shell
+cat /etc/resolv.conf 
+search default.svc.cluster.local svc.cluster.local cluster.local
+nameserver 10.96.0.10
+options ndots:5
+```
+
+可以看到，没有 `default.svc.cluster.local svc.cluster.local cluster.local` 这些DNS服务地址。
+
