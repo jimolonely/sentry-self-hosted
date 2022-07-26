@@ -53,7 +53,7 @@ kind load docker-image snuba-cleanup-self-hosted-local
 kind load docker-image sentry-self-hosted-local
 kind load docker-image sentry-cleanup-self-hosted-local
 kind load docker-image symbolicator-cleanup-self-hosted-local
-kind load docker-image centos/httpd
+kind load docker-image nginx:1.21.6-alpine
 ```
 
 # 查看Kind加载了哪些镜像
@@ -131,14 +131,14 @@ GLOBAL OPTIONS:
 # 创建集群sentry pod
 
 ```shell
-
+$ kubectl apply -f sentry-deploy.yaml 
 ```
 
 # 创建PG表
 
-
 可以看到sentry容器的命令：
 
+进入 `sentry-web`
 ```shell
 /# sentry 
 Usage: sentry [OPTIONS] COMMAND [ARGS]...
@@ -267,16 +267,52 @@ kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-querie
 kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic transactions-subscription-results
 ```
 
-# 访问sentry-web
+# pog服务展示
+
+下面没把cleanup服务展示出来，事实上我根本没起。
 
 ```shell
 $ kubectl get pods -o wide
-NAME         READY   STATUS    RESTARTS      AGE   IP           NODE                 NOMINATED NODE   READINESS GATES
-sentry-web   1/1     Running   3 (41m ago)   42m   172.18.0.2   kind-control-plane   <none>           <none>
+NAME                                              READY   STATUS    RESTARTS        AGE    IP             NODE                 NOMINATED NODE   READINESS GATES
+cr                                                1/1     Running   3 (4m31s ago)   3h4m   10.244.0.18    kind-control-plane   <none>           <none>
+sentry-cron                                       1/1     Running   0               13m    10.244.0.116   kind-control-plane   <none>           <none>
+sentry-ingest-consumer                            1/1     Running   0               13m    10.244.0.108   kind-control-plane   <none>           <none>
+sentry-nginx                                      1/1     Running   0               24s    10.244.0.121   kind-control-plane   <none>           <none>
+sentry-post-process-forwarder                     1/1     Running   0               13m    10.244.0.110   kind-control-plane   <none>           <none>
+sentry-relay                                      1/1     Running   0               13m    10.244.0.102   kind-control-plane   <none>           <none>
+sentry-snuba-api                                  1/1     Running   0               13m    10.244.0.105   kind-control-plane   <none>           <none>
+sentry-snuba-consumer                             1/1     Running   0               13m    10.244.0.107   kind-control-plane   <none>           <none>
+sentry-snuba-outcomes-consumer                    1/1     Running   0               13m    10.244.0.103   kind-control-plane   <none>           <none>
+sentry-snuba-replacer                             1/1     Running   0               13m    10.244.0.109   kind-control-plane   <none>           <none>
+sentry-snuba-sessions-consumer                    1/1     Running   0               13m    10.244.0.106   kind-control-plane   <none>           <none>
+sentry-snuba-subscription-consumer-events         1/1     Running   0               13m    10.244.0.115   kind-control-plane   <none>           <none>
+sentry-snuba-subscription-consumer-transactions   1/1     Running   0               13m    10.244.0.113   kind-control-plane   <none>           <none>
+sentry-snuba-transactions-consumer                1/1     Running   0               13m    10.244.0.104   kind-control-plane   <none>           <none>
+sentry-subscription-consumer-events               1/1     Running   0               13m    10.244.0.111   kind-control-plane   <none>           <none>
+sentry-subscription-consumer-transactions         1/1     Running   0               13m    10.244.0.114   kind-control-plane   <none>           <none>
+sentry-web                                        1/1     Running   0               13m    10.244.0.117   kind-control-plane   <none>           <none>
+sentry-worker                                     1/1     Running   0               13m    10.244.0.112   kind-control-plane   <none>           <none>
+
+$ kubectl get svc -o wide
+NAME               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+kubernetes         ClusterIP   10.96.0.1      <none>        443/TCP        7h24m   <none>
+sentry-nginx       NodePort    10.96.78.233   <none>        80:30001/TCP   5m10s   app=sentry-nginx
+sentry-relay       ClusterIP   10.96.23.77    <none>        3000/TCP       18m     app=sentry-relay
+sentry-snuba-api   ClusterIP   10.96.50.229   <none>        1218/TCP       18m     app=sentry-snuba-api
+sentry-web         ClusterIP   10.96.57.169   <none>        9000/TCP       18m     app=sentry-web
 ```
-然后浏览器访问：[http://172.18.0.2:9000](http://172.18.0.2:9000)
 
+# 访问sentry-web
 
+我们设置了一个 `sentry-nginx` 服务，将其Service类型设为 `NodePort`.
+
+通过查看集群IP，我们可以访问nginx
+```shell
+$ kubectl get nodes -o wide
+NAME                 STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE       KERNEL-VERSION      CONTAINER-RUNTIME
+kind-control-plane   Ready    control-plane   7h20m   v1.24.0   172.18.0.2    <none>        Ubuntu 21.10   5.15.0-41-generic   containerd://1.6.4
+```
+浏览器访问：[http://172.18.0.2:30001](http://172.18.0.2:30001)
 
 
 # 排查错误

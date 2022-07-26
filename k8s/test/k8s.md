@@ -217,3 +217,8 @@ options ndots:5
 
 可以看到，没有 `default.svc.cluster.local svc.cluster.local cluster.local` 这些DNS服务地址。
 
+
+# k8s运行cron job
+
+https://kubernetes.io/zh-cn/docs/tasks/job/automated-tasks-with-cron-jobs/
+

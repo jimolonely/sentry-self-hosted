@@ -3,14 +3,11 @@ apiVersion: v1
 metadata:
   name: sentry-relay
   labels:
-    app: sentry
+    app: sentry-relay
 spec:
-  hostNetwork: true
   containers:
     - name: sentry-relay
       image: getsentry/relay:22.6.0
-      ports:
-        - containerPort: 3000
       volumeMounts:
         - mountPath: /work/.relay
           name: v-relay-config
@@ -24,6 +21,18 @@ spec:
     - name: v-relay-geoip
       hostPath:
         path: /sentry/geoip
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sentry-relay
+spec:
+  selector:
+    app: sentry-relay
+  ports:
+    # Default port used by the image
+    - port: 3000
+      targetPort: 3000
 ---
 
 kind: Pod
@@ -61,7 +70,6 @@ metadata:
 spec:
   selector:
     app: sentry-snuba-api
-  type: NodePort
   ports:
     # Default port used by the image
     - port: 1218
@@ -222,7 +230,8 @@ metadata:
 spec:
   containers:
     - name: sentry-snuba-subscription-consumer-events
-      image: getsentry/snuba:22.6.0
+      image: snuba-cleanup-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
       env:
         - name: SNUBA_SETTINGS
           value: "distributed"
@@ -251,7 +260,8 @@ metadata:
 spec:
   containers:
     - name: sentry-snuba-subscription-consumer-transactions
-      image: getsentry/snuba:22.6.0
+      image: snuba-cleanup-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
       env:
         - name: SNUBA_SETTINGS
           value: "distributed"
@@ -271,65 +281,121 @@ spec:
           value:
       command: [ "snuba",  "subscriptions-scheduler-executor", "--dataset", "transactions", "--entity", "transactions", "--auto-offset-reset=latest","--no-strict-offset-reset", "--consumer-group=snuba-transactions-subscriptions-consumers", "--followed-consumer-group=transactions_group", "--delay-seconds=60", "--schedule-ttl=60", "--stale-threshold-seconds=900" ]
 ---
-kind: Pod
-apiVersion: v1
+
+apiVersion: batch/v1
+kind: CronJob
 metadata:
-  name: sentry-snuba-cleanup
-  labels:
-    app: sentry
+  name: sentry-cronjob
 spec:
-  containers:
-    - name: sentry-snuba-cleanup
-      image: snuba-cleanup-self-hosted-local:latest
-      imagePullPolicy: Never  # or IfNotPresent
-      env:
-        - name: SNUBA_SETTINGS
-          value: "distributed"
-        - name: CLICKHOUSE_HOST
-          value: "172.17.183.16"
-        - name: DEFAULT_BROKERS
-          value: "172.17.183.16:9092"
-        - name: REDIS_HOST
-          value: 172.17.183.16
-        - name: UWSGI_MAX_REQUESTS
-          value: "10000"
-        - name: UWSGI_DISABLE_LOGGING
-          value: "true"
-        # Leaving the value empty to just pass whatever is set
-        # on the host system (or in the .env file)
-        - name: SENTRY_EVENT_RETENTION_DAYS
-          value:
-      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "errors", "--dry-run", "False" ]
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: sentry-snuba-cleanup
+              image: snuba-cleanup-self-hosted-local:latest
+              imagePullPolicy: Never  # or IfNotPresent
+              env:
+                - name: SNUBA_SETTINGS
+                  value: "distributed"
+                - name: CLICKHOUSE_HOST
+                  value: "172.17.183.16"
+                - name: DEFAULT_BROKERS
+                  value: "172.17.183.16:9092"
+                - name: REDIS_HOST
+                  value: 172.17.183.16
+                - name: UWSGI_MAX_REQUESTS
+                  value: "10000"
+                - name: UWSGI_DISABLE_LOGGING
+                  value: "true"
+                # Leaving the value empty to just pass whatever is set
+                # on the host system (or in the .env file)
+                - name: SENTRY_EVENT_RETENTION_DAYS
+                  value:
+              command: ["snuba", "cleanup", "--storage", "errors", "--dry-run", "False","--clickhouse-host", "172.17.183.16", "--clickhouse-port", "9000" ]
+            - name: sentry-snuba-transactions-cleanup
+              image: snuba-cleanup-self-hosted-local:latest
+              imagePullPolicy: Never  # or IfNotPresent
+              env:
+                - name: SNUBA_SETTINGS
+                  value: "distributed"
+                - name: CLICKHOUSE_HOST
+                  value: "172.17.183.16"
+                - name: DEFAULT_BROKERS
+                  value: "172.17.183.16:9092"
+                - name: REDIS_HOST
+                  value: 172.17.183.16
+                - name: UWSGI_MAX_REQUESTS
+                  value: "10000"
+                - name: UWSGI_DISABLE_LOGGING
+                  value: "true"
+                # Leaving the value empty to just pass whatever is set
+                # on the host system (or in the .env file)
+                - name: SENTRY_EVENT_RETENTION_DAYS
+                  value:
+              command: ["snuba", "cleanup", "--storage", "transactions", "--dry-run", "False" ,"--clickhouse-host", "172.17.183.16", "--clickhouse-port", "9000"]
 ---
-kind: Pod
-apiVersion: v1
-metadata:
-  name: sentry-snuba-transactions-cleanup
-  labels:
-    app: sentry
-spec:
-  containers:
-    - name: sentry-snuba-transactions-cleanup
-      imagePullPolicy: Never  # or IfNotPresent
-      image: snuba-cleanup-self-hosted-local:latest
-      env:
-        - name: SNUBA_SETTINGS
-          value: "distributed"
-        - name: CLICKHOUSE_HOST
-          value: "172.17.183.16"
-        - name: DEFAULT_BROKERS
-          value: "172.17.183.16:9092"
-        - name: REDIS_HOST
-          value: 172.17.183.16
-        - name: UWSGI_MAX_REQUESTS
-          value: "10000"
-        - name: UWSGI_DISABLE_LOGGING
-          value: "true"
-        # Leaving the value empty to just pass whatever is set
-        # on the host system (or in the .env file)
-        - name: SENTRY_EVENT_RETENTION_DAYS
-          value:
-      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "transactions", "--dry-run", "False" ]
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#  name: sentry-snuba-cleanup
+#  labels:
+#    app: sentry
+#spec:
+#  containers:
+#    - name: sentry-snuba-cleanup
+#      image: snuba-cleanup-self-hosted-local:latest
+#      imagePullPolicy: Never  # or IfNotPresent
+#      env:
+#        - name: SNUBA_SETTINGS
+#          value: "distributed"
+#        - name: CLICKHOUSE_HOST
+#          value: "172.17.183.16"
+#        - name: DEFAULT_BROKERS
+#          value: "172.17.183.16:9092"
+#        - name: REDIS_HOST
+#          value: 172.17.183.16
+#        - name: UWSGI_MAX_REQUESTS
+#          value: "10000"
+#        - name: UWSGI_DISABLE_LOGGING
+#          value: "true"
+#        # Leaving the value empty to just pass whatever is set
+#        # on the host system (or in the .env file)
+#        - name: SENTRY_EVENT_RETENTION_DAYS
+#          value:
+#      command: ["snuba", "cleanup", "--storage", "errors", "--dry-run", "False" ,"--clickhouse-host", "172.17.183.16", "--clickhouse-port", "9000"]
+---
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#  name: sentry-snuba-transactions-cleanup
+#  labels:
+#    app: sentry
+#spec:
+#  containers:
+#    - name: sentry-snuba-transactions-cleanup
+#      imagePullPolicy: Never  # or IfNotPresent
+#      image: snuba-cleanup-self-hosted-local:latest
+#      env:
+#        - name: SNUBA_SETTINGS
+#          value: "distributed"
+#        - name: CLICKHOUSE_HOST
+#          value: "172.17.183.16"
+#        - name: DEFAULT_BROKERS
+#          value: "172.17.183.16:9092"
+#        - name: REDIS_HOST
+#          value: 172.17.183.16
+#        - name: UWSGI_MAX_REQUESTS
+#          value: "10000"
+#        - name: UWSGI_DISABLE_LOGGING
+#          value: "true"
+#        # Leaving the value empty to just pass whatever is set
+#        # on the host system (or in the .env file)
+#        - name: SENTRY_EVENT_RETENTION_DAYS
+#          value:
+#      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "transactions", "--dry-run", "False" ]
 ---
 #
 #
@@ -344,15 +410,12 @@ metadata:
   labels:
     app: sentry-web
 spec:
-  hostNetwork: true
   containers:
     - name: sentry-web
       image: sentry-self-hosted-local:latest
       imagePullPolicy: Never  # or IfNotPresent
       command: [ "/etc/sentry/entrypoint.sh" ]
       args: [ "run", "web" ]
-      ports:
-        - containerPort: 9000
       env:
         - name: PYTHONUSERBASE
           value: "/data/custom-packages"
@@ -395,7 +458,6 @@ metadata:
 spec:
   selector:
     app: sentry-web
-  type: NodePort
   ports:
     # Default port used by the image
     - port: 9000
@@ -692,6 +754,43 @@ spec:
 ---
 
 
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-nginx
+  labels:
+    app: sentry-nginx
+spec:
+#  hostNetwork: true
+  containers:
+    - name: sentry-nginx
+      image: nginx:1.21.6-alpine
+#      ports:
+#        - containerPort: 88
+      imagePullPolicy: Never  # or IfNotPresent
+      volumeMounts:
+        - mountPath: /etc/nginx
+          name: v-sentry-nginx
+  volumes:
+    - name: v-sentry-nginx
+      hostPath:
+        path: /sentry/nginx
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: sentry-nginx
+spec:
+  type: NodePort
+  selector:
+    app: sentry-nginx
+  ports:
+    # Default port used by the image
+    - port: 80
+      targetPort: 80
+      nodePort: 30001
+---
 
 
 
