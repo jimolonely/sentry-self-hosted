@@ -363,10 +363,10 @@ spec:
     - name: v-sentry-config
       hostPath:
         # 相对路径不行
-        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/sentry
+        path: /sentry/sentry
     - name: v-sentry-geoip
       hostPath:
-        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/geoip
+        path: /sentry/geoip
 ---
 
 
@@ -389,5 +389,5 @@ spec:
   volumes:
     - name: test-volume
       hostPath:
-        path: /home/jack/software/sentry/self-hosted-22.6.0/k8s/sentry/sentry
+        path: /sentry/sentry
         type:
