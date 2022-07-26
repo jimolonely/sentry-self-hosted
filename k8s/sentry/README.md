@@ -193,6 +193,79 @@ Commands:
  kubectl exec sentry-web sentry createuser
 ```
 
+# 创建CK表
+
+任意一个snuba服务起来后就可以进去执行：
+
+```shell
+snuba migrations migrate --force
+```
+
+# 创建Kafka Topic
+
+在snuba源码 `topics.py`里定义了默认主题：
+
+```python
+class Topic(Enum):
+    EVENTS = "events"
+    EVENT_REPLACEMENTS = "event-replacements"
+    COMMIT_LOG = "snuba-commit-log"
+    CDC = "cdc"
+    TRANSACTIONS = "transactions"
+    TRANSACTIONS_COMMIT_LOG = "snuba-transactions-commit-log"
+    METRICS = "snuba-metrics"
+    OUTCOMES = "outcomes"
+    SESSIONS = "ingest-sessions"
+    METRICS_COMMIT_LOG = "snuba-metrics-commit-log"
+    SUBSCRIPTION_SCHEDULED_EVENTS = "scheduled-subscriptions-events"
+    SUBSCRIPTION_SCHEDULED_TRANSACTIONS = "scheduled-subscriptions-transactions"
+    SUBSCRIPTION_SCHEDULED_METRICS = "scheduled-subscriptions-metrics"
+    SUBSCRIPTION_RESULTS_EVENTS = "events-subscription-results"
+    SUBSCRIPTION_RESULTS_TRANSACTIONS = "transactions-subscription-results"
+    SUBSCRIPTION_RESULTS_METRICS = "metrics-subscription-results"
+    QUERYLOG = "snuba-queries"
+    PROFILES = "processed-profiles"
+    PROFILES_FUNCTIONS = "profiles-call-tree"
+    REPLAYEVENTS = "snuba-replay-events"
+    GENERIC_METRICS = "snuba-generic-metrics"
+    GENERIC_METRICS_SETS_COMMIT_LOG = "snuba-generic-metrics-sets-commit-log"
+    GENERIC_METRICS_DISTRIBUTIONS_COMMIT_LOG = (
+        "snuba-generic-metrics-distributions-commit-log"
+    )
+
+    DEAD_LETTER_QUEUE_INSERTS = "snuba-dead-letter-inserts"
+    DEAD_LETTER_METRICS = "snuba-dead-letter-metrics"
+    DEAD_LETTER_SESSIONS = "snuba-dead-letter-sessions"
+    DEAD_LETTER_GENERIC_METRICS = "snuba-dead-letter-generic-metrics"
+```
+
+进入kafka命令行创建主题
+```shell
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic $topic 
+
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic cdc
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic event-replacements
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic events
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic events-subscription-results
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic ingest-attachments
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic ingest-events
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic ingest-sessions
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic ingest-transactions
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic metrics-subscription-results
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic outcomes
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic processed-profiles
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic scheduled-subscriptions-events
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic scheduled-subscriptions-metrics
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic scheduled-subscriptions-transactions
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-commit-log
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-dead-letter-inserts
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-dead-letter-metrics
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-dead-letter-sessions
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-metrics
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-metrics-commit-log
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic snuba-queries
+kafka-topics --create --bootstrap-server 172.17.183.16:9092 --topic transactions-subscription-results
+```
 
 # 访问sentry-web
 

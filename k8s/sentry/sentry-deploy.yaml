@@ -5,9 +5,12 @@ metadata:
   labels:
     app: sentry
 spec:
+  hostNetwork: true
   containers:
     - name: sentry-relay
       image: getsentry/relay:22.6.0
+      ports:
+        - containerPort: 3000
       volumeMounts:
         - mountPath: /work/.relay
           name: v-relay-config
@@ -23,295 +26,311 @@ spec:
         path: /sentry/geoip
 ---
 
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-api
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-api
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-consumer
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-consumer
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "snuba", "consumer", "--storage", "errors", "--auto-offset-reset=latest", "--max-batch-time-ms", "750" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-outcomes-consumer
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-outcomes-consumer
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "snuba", "consumer", "--storage", "outcomes_raw", "--auto-offset-reset=earliest", "--max-batch-time-ms", "750" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-sessions-consumer
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-sessions-consumer
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "snuba", "consumer", "--storage", "sessions_raw", "--auto-offset-reset=latest", "--max-batch-time-ms", "750" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-transactions-consumer
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-transactions-consumer
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "snuba", "consumer", "--storage", "transactions", "--consumer-group", "transactions_group" ,"--auto-offset-reset=latest", "--max-batch-time-ms", "750", "--commit-log-topic=snuba-commit-log" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-replacer
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-replacer
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "snuba", "replacer", "--storage", "errors", "--auto-offset-reset=latest", "--max-batch-size", "3" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-subscription-consumer-events
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-subscription-consumer-events
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "snuba", "subscriptions-scheduler-executor", "--dataset", "events", "--entity", "events", "--auto-offset-reset=latest", "--no-strict-offset-reset", "--consumer-group=snuba-events-subscriptions-consumers", "--followed-consumer-group=snuba-consumers" ,"--delay-seconds=60" ,"--schedule-ttl=60" ,"--stale-threshold-seconds=900" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-subscription-consumer-transactions
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-subscription-consumer-transactions
-#      image: getsentry/snuba:22.6.0
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: ["snuba",  "subscriptions-scheduler-executor", "--dataset", "transactions", "--entity", "transactions", "--auto-offset-reset=latest","--no-strict-offset-reset", "--consumer-group=snuba-transactions-subscriptions-consumers", "--followed-consumer-group=transactions_group", "--delay-seconds=60", "--schedule-ttl=60", "--stale-threshold-seconds=900" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-cleanup
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-cleanup
-#      image: snuba-cleanup-self-hosted-local
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "errors", "--dry-run", "False" ]
-#---
-#kind: Pod
-#apiVersion: v1
-#metadata:
-#  name: sentry-snuba-transactions-cleanup
-#  labels:
-#    app: sentry
-#spec:
-#  containers:
-#    - name: sentry-snuba-transactions-cleanup
-#      image: snuba-cleanup-self-hosted-local
-#      env:
-#        - name: SNUBA_SETTINGS
-#          value: "distributed"
-#        - name: CLICKHOUSE_HOST
-#          value: "172.17.183.16"
-#        - name: DEFAULT_BROKERS
-#          value: "172.17.183.16:9092"
-#        - name: REDIS_HOST
-#          value: 172.17.183.16
-#        - name: UWSGI_MAX_REQUESTS
-#          value: "10000"
-#        - name: UWSGI_DISABLE_LOGGING
-#          value: "true"
-#        # Leaving the value empty to just pass whatever is set
-#        # on the host system (or in the .env file)
-#        - name: SENTRY_EVENT_RETENTION_DAYS
-#          value:
-#      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "transactions", "--dry-run", "False" ]
-#---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-api
+  labels:
+    app: sentry-snuba-api
+spec:
+  containers:
+    - name: sentry-snuba-api
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sentry-snuba-api
+spec:
+  selector:
+    app: sentry-snuba-api
+  type: NodePort
+  ports:
+    # Default port used by the image
+    - port: 1218
+      targetPort: 1218
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-consumer
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-consumer
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "snuba", "consumer", "--storage", "errors", "--auto-offset-reset=latest", "--max-batch-time-ms", "750" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-outcomes-consumer
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-outcomes-consumer
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "snuba", "consumer", "--storage", "outcomes_raw", "--auto-offset-reset=earliest", "--max-batch-time-ms", "750" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-sessions-consumer
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-sessions-consumer
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "snuba", "consumer", "--storage", "sessions_raw", "--auto-offset-reset=latest", "--max-batch-time-ms", "750" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-transactions-consumer
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-transactions-consumer
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "snuba", "consumer", "--storage", "transactions", "--consumer-group", "transactions_group" ,"--auto-offset-reset=latest", "--max-batch-time-ms", "750", "--commit-log-topic=snuba-commit-log" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-replacer
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-replacer
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "snuba", "replacer", "--storage", "errors", "--auto-offset-reset=latest", "--max-batch-size", "3" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-subscription-consumer-events
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-subscription-consumer-events
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "snuba", "subscriptions-scheduler-executor", "--dataset", "events", "--entity", "events", "--auto-offset-reset=latest", "--no-strict-offset-reset", "--consumer-group=snuba-events-subscriptions-consumers", "--followed-consumer-group=snuba-consumers" ,"--delay-seconds=60" ,"--schedule-ttl=60" ,"--stale-threshold-seconds=900" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-subscription-consumer-transactions
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-subscription-consumer-transactions
+      image: getsentry/snuba:22.6.0
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: ["snuba",  "subscriptions-scheduler-executor", "--dataset", "transactions", "--entity", "transactions", "--auto-offset-reset=latest","--no-strict-offset-reset", "--consumer-group=snuba-transactions-subscriptions-consumers", "--followed-consumer-group=transactions_group", "--delay-seconds=60", "--schedule-ttl=60", "--stale-threshold-seconds=900" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-cleanup
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-cleanup
+      image: snuba-cleanup-self-hosted-local:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "errors", "--dry-run", "False" ]
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sentry-snuba-transactions-cleanup
+  labels:
+    app: sentry
+spec:
+  containers:
+    - name: sentry-snuba-transactions-cleanup:latest
+      imagePullPolicy: Never  # or IfNotPresent
+      image: snuba-cleanup-self-hosted-local
+      env:
+        - name: SNUBA_SETTINGS
+          value: "distributed"
+        - name: CLICKHOUSE_HOST
+          value: "172.17.183.16"
+        - name: DEFAULT_BROKERS
+          value: "172.17.183.16:9092"
+        - name: REDIS_HOST
+          value: 172.17.183.16
+        - name: UWSGI_MAX_REQUESTS
+          value: "10000"
+        - name: UWSGI_DISABLE_LOGGING
+          value: "true"
+        # Leaving the value empty to just pass whatever is set
+        # on the host system (or in the .env file)
+        - name: SENTRY_EVENT_RETENTION_DAYS
+          value:
+      command: [ "*/5 * * * *", "gosu", "snuba", "snuba", "cleanup", "--storage", "transactions", "--dry-run", "False" ]
+---
 #
 #
 #
@@ -437,6 +456,22 @@ spec:
 
 
 
+
+
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: cr
+#  namespace: default
+#spec:
+#  containers:
+#    - name: cr
+#      image: curlimages/curl:7.84.0
+#      command:
+#        - sleep
+#        - "3600"
+#      imagePullPolicy: IfNotPresent
+#  restartPolicy: Always
 
 
 #kind: Pod

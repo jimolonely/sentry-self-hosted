@@ -147,4 +147,32 @@ spec:
 ```
 
 
+# K8s Service和DNS那些事
+
+文档：https://kubernetes.io/zh-cn/docs/concepts/services-networking/connect-applications-service/
+
+先IP
+
+再环境变量
+
+最后DNS
+
+```shell
+$ kubectl run curl1 --image=radial/busyboxplus:curl -i --tty
+If you don't see a command prompt, try pressing enter.
+# 找到
+[ root@curl1:/ ]$ nslookup sentry-web
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      sentry-web
+Address 1: 10.96.231.203 sentry-web.default.svc.cluster.local
+
+# 找不到
+[ root@curl1:/ ]$ nslookup sentry-web
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+nslookup: can't resolve 'sentry-web'
+```
 

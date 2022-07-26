@@ -7,7 +7,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 Sentry.init({
-  dsn: "http://b1d7cdaa0b5e4372b73075f09998b96d@localhost:9000/3",
+//  dsn: "http://b1d7cdaa0b5e4372b73075f09998b96d@localhost:9000/3",
+  dsn: "http://d4b982b72b3b4f379236e74e42de38f8@172.18.0.2:3000/2",
   integrations: [new BrowserTracing({
     tracingOrigins: ["jsonplaceholder.typicode.com", "localhost"],
   })],

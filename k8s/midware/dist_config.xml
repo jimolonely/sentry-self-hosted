@@ -7,7 +7,7 @@
             <shard>
                 <replica>
                     <host>172.17.183.16</host>
-                    <port>9003</port>
+                    <port>9000</port>
                 </replica>
             </shard>
         </cluster_one_sh>
